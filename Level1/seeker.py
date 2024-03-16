@@ -12,6 +12,7 @@ class Seeker(Agent) :
     def __init__(self, start_pos, range, map = None) -> None:
         super().__init__(start_pos, range, map)
         self.observable = set()
+        self.update_observable()
         
     def update_observable(self):
         self.observable.clear()
