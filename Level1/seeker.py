@@ -1,5 +1,5 @@
 from agent import Agent
-import numpy as np
+import map
 
 adjacent = [(0, 1), (0, -1), (-1, 0), (1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
 adjacent_of_last_step = [((-1, 0), (1, 0)), ((-1, 0), (1, 0)), ((0, -1), (0, 1)), ((0, -1), (0, 1)), ((-1, 0), (0, -1)), ((1, 0), (0, -1)), ((-1, 0), (0, 1)), ((1, 0), (0, 1))]
@@ -44,27 +44,15 @@ class Seeker(Agent) :
     def search(self):
         pass
 
+#test
+m = map.Map(7, 7)
+#fill all space with 0
+for i in range(7):
+    m.map.append([0] * 7)
+m.map[1][4] = -1
+m.map[2][5] = -1
+m.map[2][1] = -1
+m.print_map()
 
-
-   
-class map: # dummy class for testing
-    def __init__(self, row, col) -> None:
-        self.row = row
-        self.col = col
-        self.map = np.zeros((row, col))
-    def print_map(self):
-        print(self.map)
-        print()
-        
-# test       
-if __name__ == "__main__":
-    m = map(7, 7)
-    sk = Seeker((3, 3), 3, m)
-    
-    m.map[1][4] = -1
-    m.map[2][5] = -1
-    m.map[2][1] = -1
-    print("map:")
-    m.print_map()
-    sk.update_observable()
-    sk.print_observable()
+s = Seeker((3, 3), 3, m)
+s.print_observable()
