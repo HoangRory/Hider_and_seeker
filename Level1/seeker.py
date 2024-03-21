@@ -22,7 +22,7 @@ class Seeker(Agent) :
         # check if tile adjacent to the seeker is blocked
         for i in adjacent:
             if self.current_pos[0] + i[0] >= 0 and self.current_pos[0] + i[0] < self.map.row and self.current_pos[1] + i[1] >= 0 and self.current_pos[1] + i[1] < self.map.col:
-                if self.map.map[self.current_pos[0] + i[0], self.current_pos[1] + i[1]] == -1:
+                if self.map.map[self.current_pos[0] + i[0]][self.current_pos[1] + i[1]] == -1:
                     for step in range(2, self.range + 1):
                         self.observable.remove((self.current_pos[0] + i[0] * step, self.current_pos[1] + i[1] * step))
                         # at the last step, also remove the adjacent tiles
@@ -34,7 +34,7 @@ class Seeker(Agent) :
             for i in two_steps_away:
                 if ((self.current_pos[0] + i[0] * offset[0] >= 0 and self.current_pos[0] + i[0] * offset[0] < self.map.row)
                     and (self.current_pos[1] + i[1] * offset[1] >= 0 and self.current_pos[1] + i[1] * offset[1] < self.map.col)):
-                    if self.map.map[self.current_pos[0] + i[0] * offset[0], self.current_pos[1] + i[1] * offset[1]] == -1:
+                    if self.map.map[self.current_pos[0] + i[0] * offset[0]][self.current_pos[1] + i[1] * offset[1]] == -1:
                         for j in tiles_to_remove[two_steps_away.index(i)]:
                             self.observable.remove((self.current_pos[0] + (i[0] + j[0]) * offset[0], self.current_pos[1] + (i[1] + j[1]) * offset[1]))
                                     
@@ -61,9 +61,9 @@ if __name__ == "__main__":
     m = map(7, 7)
     sk = Seeker((3, 3), 3, m)
     
-    m.map[1, 4] = -1
-    m.map[2, 5] = -1
-    m.map[2, 1] = -1
+    m.map[1][4] = -1
+    m.map[2][5] = -1
+    m.map[2][1] = -1
     print("map:")
     m.print_map()
     sk.update_observable()
