@@ -8,11 +8,13 @@ two_steps_away = [(-2, 0), (-2, 1), (-2, 2), (-1, 2), (0, 2)] # a quarter of the
 tiles_to_remove = [((-1, 0)), ((-1, 0), (-1, 1)), ((-1, 1)), ((-1, 1), (0, 1)), ((0, 1))] # the tiles to remove from the observable set if corresponding tile two steps away is blocked
 quarter_offset = [(1, 1), (-1, 1), (-1, -1), (1, -1)] # the offset of the tiles in the quarter
 
-class Seeker(Agent) :
-    def __init__(self, start_pos, range, map = None) -> None:
+class Seeker(Agent):
+    def __init__(self, start_pos, range, map = None, parent = None):
         super().__init__(start_pos, range, map)
         self.observable = set()
         self.update_observable()
+        self.parent = parent
+        self.update_map()
         
     def update_observable(self):
         self.observable.clear()
@@ -24,35 +26,44 @@ class Seeker(Agent) :
             if self.current_pos[0] + i[0] >= 0 and self.current_pos[0] + i[0] < self.map.row and self.current_pos[1] + i[1] >= 0 and self.current_pos[1] + i[1] < self.map.col:
                 if self.map.map[self.current_pos[0] + i[0]][self.current_pos[1] + i[1]] == -1:
                     for step in range(2, self.range + 1):
-                        self.observable.remove((self.current_pos[0] + i[0] * step, self.current_pos[1] + i[1] * step))
+                        index_remove = (self.current_pos[0] + i[0] * step, self.current_pos[1] + i[1] * step)
+                        if index_remove in self.observable:
+                            print(index_remove)
+                            self.observable.remove(index_remove)
                         # at the last step, also remove the adjacent tiles
                         if step == self.range:
-                            for j in adjacent_of_last_step[adjacent.index(i)]:
-                                self.observable.remove((self.current_pos[0] + i[0] * step + j[0], self.current_pos[1] + i[1] * step + j[1]))
+                            for k in adjacent_of_last_step[adjacent.index(i)]:
+                                index_remove = (self.current_pos[0] + i[0] * step + k[0], self.current_pos[1] + i[1] * step + k[1])
+                                if index_remove in self.observable:
+                                    print(index_remove)
+                                    self.observable.remove(index_remove)
         # check if tile two steps away from the seeker is blocked
         for offset in quarter_offset:    
             for i in two_steps_away:
                 if ((self.current_pos[0] + i[0] * offset[0] >= 0 and self.current_pos[0] + i[0] * offset[0] < self.map.row)
                     and (self.current_pos[1] + i[1] * offset[1] >= 0 and self.current_pos[1] + i[1] * offset[1] < self.map.col)):
                     if self.map.map[self.current_pos[0] + i[0] * offset[0]][self.current_pos[1] + i[1] * offset[1]] == -1:
-                        for j in tiles_to_remove[two_steps_away.index(i)]:
-                            self.observable.remove((self.current_pos[0] + (i[0] + j[0]) * offset[0], self.current_pos[1] + (i[1] + j[1]) * offset[1]))
+                        for k in tiles_to_remove[two_steps_away.index(i)]:
+                            index_remove = (self.current_pos[0] + (i[0] + k[0]) * offset[0], self.current_pos[1] + (i[1] + k[1]) * offset[1])
+                            if index_remove in self.observable:
+                                print(index_remove)
+                                self.observable.remove(index_remove)
+    
+    def update_map(self):
+        list_observable = list(self.observable.copy())
+        for i in range(len(self.observable)):
+            self.map.map[list_observable[i][0]][list_observable[i][1]] = 4
+        self.map.map[self.current_pos[0]][self.current_pos[1]] = 3
                                     
     def print_observable(self): # for testing only
         print(self.observable)
         
-    def search(self):
-        pass
 
-#test
-m = map.Map(7, 7)
-#fill all space with 0
-for i in range(7):
-    m.map.append([0] * 7)
-m.map[1][4] = -1
-m.map[2][5] = -1
-m.map[2][1] = -1
-m.print_map()
-
-s = Seeker((3, 3), 3, m)
-s.print_observable()
+if __name__ == "__main__":
+    map2d = map.Map()
+    map2d.read_map('map1.txt', 1)
+    map2d.print_map()
+    seeker_pos = map2d.get_seeker_pos()
+    s = Seeker(seeker_pos, 3, map2d)
+    s.print_observable()
+    s.map.print_map()
