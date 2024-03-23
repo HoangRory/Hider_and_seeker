@@ -8,7 +8,6 @@ DOWN_RIGHT = (1, -1)
 DOWN_LEFT = (-1, -1)
 WAIT = (0, 0)
 
-
 class Agent :
     def __init__(self, start_pos, range, map = None) -> None:
         self.range = range
@@ -20,6 +19,3 @@ class Agent :
     def move(self, action):
         if self.check_valid_move(action):
             self.current_pos = (self.current_pos[0] + action[0], self.current_pos[1] + action[1])
-
-
-
