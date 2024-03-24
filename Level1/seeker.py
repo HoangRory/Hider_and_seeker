@@ -44,7 +44,7 @@ class Seeker:
                                     self.visionCount -= 1
                                     self.observed.discard((i, self.seeker_pos[1]))
                                     self.unobserved.add((i, self.seeker_pos[1]))
-                elif seeker_pos[0] < obstacle_pos[0]:
+                elif self.seeker_pos[0] < obstacle_pos[0]:
                     for i in range(obstacle_pos[0] + 1, self.seeker_pos[0] + self.vision_range + 1):
                         if i >= 0 and i < self.map.row:
                             if self.parent == None or (i, self.seeker_pos[1]) not in self.parent.observed:
@@ -281,7 +281,7 @@ class Seeker:
                 if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                     if self.map.map[i][j] == 1 or self.map.map[i][j] == -1:
                         obstacles.append((i, j))
-                    elif self.map.map[i][j] == 0:
+                    elif self.map.map[i][j] == 0 or self.map.map[i][j] == 5:
                         self.map.map[i][j] = 4
                         self.visionCount += 1
                         self.observed.add((i, j))
@@ -358,7 +358,9 @@ class Seeker:
             # time.sleep(1)
         return current_state
     
-    def AStar(self, goal_pos, hider):
+    def AStar(self, goal_pos, hider, checkRunningSignal = False):
+        if checkRunningSignal == True:
+            self.map.map[goal_pos[0]][goal_pos[1]] = 5
         frontier = []
         heapq.heappush(frontier, self)
         explored = set()
@@ -370,7 +372,7 @@ class Seeker:
                 continue
             if current_state.checkGoal(goal_pos):
                 return current_state
-            if goal_pos != hider.hider_pos and hider_pos in current_state.observed:
+            if goal_pos != hider.hider_pos and hider.hider_pos in current_state.observed:
                 return current_state
             explored.add(tuple(tuple(row) for row in current_state.map.map))
             new_states = current_state.generateNewStates(checkAStar = True)
