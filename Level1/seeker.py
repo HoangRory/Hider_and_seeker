@@ -1,4 +1,5 @@
 from map import Map
+from hider import Hider
 import heapq
 import time
 import random
@@ -337,7 +338,7 @@ class Seeker:
     def findUnobservedSpace(self):
         return random.choice(list(self.unobserved))
         
-    def hillClimbing(self, hider_pos):
+    def hillClimbing(self, hider):
         current_state = self
         while True:
             new_states = current_state.generateNewStates()
@@ -349,14 +350,15 @@ class Seeker:
             if best_state.visionCount <= current_state.visionCount:
                 break
             current_state = best_state
-            if hider_pos in current_state.observed:
+            hider.step += 1
+            if hider.hider_pos in current_state.observed or hider.step == hider.timeSignal:
                 break
-            print(current_state.map.print_map())
-            print(current_state.visionCount)
-            time.sleep(1)
+            # print(current_state.map.print_map())
+            # print(current_state.visionCount)
+            # time.sleep(1)
         return current_state
     
-    def AStar(self, goal_pos, hider_pos):
+    def AStar(self, goal_pos, hider):
         frontier = []
         heapq.heappush(frontier, self)
         explored = set()
@@ -368,7 +370,7 @@ class Seeker:
                 continue
             if current_state.checkGoal(goal_pos):
                 return current_state
-            if goal_pos != hider_pos and hider_pos in current_state.observed:
+            if goal_pos != hider.hider_pos and hider_pos in current_state.observed:
                 return current_state
             explored.add(tuple(tuple(row) for row in current_state.map.map))
             new_states = current_state.generateNewStates(checkAStar = True)
@@ -396,6 +398,7 @@ if __name__ == "__main__":
     print("Map:\n")
     map2d.print_map()
     seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
+    hider = Hider(hider_pos, 3, map2d)
     seeker.updateMap()
     print("Path:\n")
     # result = seeker.hillClimbing(hider_pos)
@@ -404,18 +407,22 @@ if __name__ == "__main__":
     # path = findSolution(seeker, result)
     result = seeker
     while (True):
-        result = result.hillClimbing(hider_pos)
-        if hider_pos in result.observed:
-            result = result.AStar(hider_pos, hider_pos)
+        result = result.hillClimbing(hider)
+        if hider.hider_pos in result.observed:
+            result = result.AStar(hider.hider_pos, hider)
             break
-        else:
-            result = result.AStar(result.findUnobservedSpace(), hider_pos)
-            if hider_pos in result.observed:
-                result = result.AStar(hider_pos, hider_pos)
+        elif hider.step == hider.timeSignal:
+            result = result.AStar(hider.signal(), hider)
+            if hider.hider_pos in result.observed:
+                result = result.AStar(hider.hider_pos, hider)
                 break
-        
-    path = findSolution(seeker, result)
+        else:
+            result = result.AStar(result.findUnobservedSpace(), hider)
+            if hider_pos in result.observed:
+                result = result.AStar(hider.hider_pos, hider)
+                break
     count = 0
+    path = findSolution(seeker, result)
     for state in path:
         print(f"Step: {count}")
         state.map.print_map()

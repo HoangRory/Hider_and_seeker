@@ -1,55 +1,22 @@
-from agent import Agent
+from map import Map
 import random
 
-class Hider(Agent) :
-    def __init__(self, start_pos, range, map=None) -> None:
-        super().__init__(start_pos, range, map)
-
-    #check if cell is in bound
-    def is_in_bound(self, x, y):
-        return 0 <= x < len(self.map) and 0 <= y < len(self.map[0])
+class Hider:
+    def __init__(self, hider_pos, radius, map2d, timeSignal = 5):
+        self.hider_pos = hider_pos
+        self.radius = radius
+        self.map2d = map2d
+        self.step = 0
+        self.timeSignal = timeSignal
     
-    #check if cell is empty
-    def is_empty_cell(self, x, y):
-        return self.map[x][y] == 0
-
-    #choose random cell after a unit of time
-    def signal(self, seeker):
-        location_around = []
-        for dx in range (-3, 4): #range of 3
-            for dy in range (-3, 4):
-                self_x = self.current_pos[0] + dx
-                self_y = self.current_pos[1] + dy
-
-                if self.is_in_bound(self_x, self_y) and self.is_empty_cell(self_x, self_y):
-                    location_around.append((self_x, self_y))
-
-        if location_around:
-            #random use for later
-            # signal_location = random.choice(location_around)
-            # print(f"Signal sent at {signal_location}")
-            # return signal_location
-            
-            return location_around[0] #return the first location for now
-
-        return None
+    def signal(self):
+        area = []
+        for i in range(self.hider_pos[0] - self.radius, self.hider_pos[0] + self.radius + 1):
+            for j in range(self.hider_pos[1] - self.radius, self.hider_pos[1] + self.radius + 1):
+                if i >= 0 and i < self.map2d.row and j >= 0 and j < self.map2d.col:
+                    if self.map2d.map[i][j] == 0:
+                        area.append((i, j))
+        return random.choice(area)
     
 
-def test_hider_signal():
-    test_map = [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 0, 1, 1, 0],
-        [0, 1, 0, 0, 0, 1, 0],
-        [0, 0, 0, 2, 0, 0, 0],  # Hider (2) is placed in the middle
-        [0, 1, 0, 0, 0, 1, 0],
-        [0, 1, 1, 0, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-    ]
-    
-    hider = Hider((3, 3), 2, test_map)
 
-    signal_location = hider.signal(None)
-
-    print(signal_location)
-
-test_hider_signal()
