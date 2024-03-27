@@ -28,10 +28,10 @@ class MapGUI:
         pygame.display.set_caption('Hide and Seek')
 
     def draw_map(self):
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_blink_time >= self.signal_blink_interval:
-            self.last_blink_time = current_time
-            self.toggle_signal_visibility()
+        # current_time = pygame.time.get_ticks()
+        # if current_time - self.last_blink_time >= self.signal_blink_interval:
+        #     self.last_blink_time = current_time
+        #     self.toggle_signal_visibility()
         self.screen.fill((255, 255, 255))  # Fill background with white
         # Draw each tile based on map data
         for y in range(len(self.map_data)):
@@ -63,7 +63,7 @@ def runMapGUI(beginningMap, path):
         if step_index < len(path):
             map_gui.map_data = path[step_index].map.map
             map_gui.draw_map()
-            pygame.time.wait(1000)  # Wait for 1 second
+            pygame.time.wait(200)  # Wait for 1 second
             step_index += 1
 
 if __name__ == "__main__":
@@ -75,21 +75,29 @@ if __name__ == "__main__":
     hider = Hider(hider_pos, 3, map2d)
     seeker.updateMap()
     result = seeker
-    while (True):
+    while True:
         result = result.hillClimbing(hider)
         if hider.hider_pos in result.observed:
             result = result.AStar(hider.hider_pos, hider)
             break
-        elif hider.step == hider.timeSignal:
-            checkRunningSignal = True
-            result = result.AStar(hider.signal(), hider, True)
+        elif hider.signal_pos in result.observed:
+            result = result.AStar(hider.signal_pos, hider)
+            temp = result
+            path = sk.findSolution(seeker, result)
+            for i in range(len(path)):
+                if hider.hider_pos in path[i].observed:
+                    temp = path[i]
+                    break
+            result = temp
+            result = result.hillClimbing(hider)
+        else:
+            for val in result.unobserved:
+                goal_pos = val
+                break
+            result = result.AStar(goal_pos, hider, result.unobserved)
             if hider.hider_pos in result.observed:
                 result = result.AStar(hider.hider_pos, hider)
                 break
-        else:
-            result = result.AStar(result.findUnobservedSpace(), hider)
-            if hider_pos in result.observed:
-                result = result.AStar(hider.hider_pos, hider)
-                break
+    # result = result.hillClimbing(hider)
     path = sk.findSolution(seeker, result)
     runMapGUI(map2d.map, path)

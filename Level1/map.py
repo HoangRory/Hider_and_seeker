@@ -1,11 +1,13 @@
 from pathlib import Path
 
 class Map:
-    def __init__(self, row = 0, col = 0):
+    def __init__(self, row = 0, col = 0, step = 0, timeSignal = 5):
         self.row = row
         self.col = col
         self.map = []
         self.obstacles = []
+        self.step = step
+        self.timeSignal = timeSignal
     
     def read_map(self, file_name, level = 1):
         #read map from file with name file_name in folder "Input/Level{level}" 
@@ -41,6 +43,22 @@ class Map:
                 if self.map[i][j] == 2:
                     return (i, j)
         return None
+
+    def get_obstacles(self):
+        list_obstacles = []
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == -1:
+                    list_obstacles.append((i, j))
+        return list_obstacles
+    
+    def get_walls(self):
+        list_walls = []
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == 1:
+                    list_walls.append((i, j))
+        return list_walls
     
     def print_map(self):
         for i in range(self.row):

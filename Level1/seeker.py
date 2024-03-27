@@ -14,7 +14,7 @@ DOWN_LEFT = (-1, -1)
 
 class Seeker:
     def __init__(self, map2d, seeker_pos, vision_range = 3, visionCount = 0, path_cost = 0, heuristic_cost = 0, parent = None, unobserved = None):
-        self.map = Map(map2d.row, map2d.col)
+        self.map = Map(map2d.row, map2d.col, map2d.step, map2d.timeSignal)
         self.map.map = [row.copy() for row in map2d.map]
         self.map.obstacles = map2d.obstacles.copy()
         self.seeker_pos = seeker_pos
@@ -40,7 +40,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row:
                             if self.parent == None or (i, self.seeker_pos[1]) not in self.parent.observed:
                                 if self.map.map[i][self.seeker_pos[1]] != 1 and self.map.map[i][self.seeker_pos[1]] != -1: 
-                                    self.map.map[i][self.seeker_pos[1]] = 0
+                                    if self.map.map[i][self.seeker_pos[1]] != 2 and self.map.map[i][self.seeker_pos[1]] != 5:
+                                        self.map.map[i][self.seeker_pos[1]] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, self.seeker_pos[1]))
                                     self.unobserved.add((i, self.seeker_pos[1]))
@@ -49,7 +50,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row:
                             if self.parent == None or (i, self.seeker_pos[1]) not in self.parent.observed:
                                 if self.map.map[i][self.seeker_pos[1]] != 1 and self.map.map[i][self.seeker_pos[1]] != -1:
-                                    self.map.map[i][self.seeker_pos[1]] = 0
+                                    if self.map.map[i][self.seeker_pos[1]] != 2 and self.map.map[i][self.seeker_pos[1]] != 5:
+                                        self.map.map[i][self.seeker_pos[1]] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, self.seeker_pos[1]))
                                     self.unobserved.add((i, self.seeker_pos[1]))
@@ -61,7 +63,8 @@ class Seeker:
                                 if j >= 0 and j < self.map.col:
                                     if self.parent == None or (i, j) not in self.parent.observed:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                            self.map.map[i][j] = 0
+                                            if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                                self.map.map[i][j] = 0
                                             self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
@@ -72,7 +75,8 @@ class Seeker:
                                 if j >= 0 and j < self.map.col:
                                     if self.parent == None or (i, j) not in self.parent.observed:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                            self.map.map[i][j] = 0
+                                            if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                                self.map.map[i][j] = 0
                                             self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
@@ -85,7 +89,8 @@ class Seeker:
                         if j >= 0 and j < self.map.col:
                             if self.parent == None or (self.seeker_pos[0], j) not in self.parent.observed:
                                 if self.map.map[self.seeker_pos[0]][j] != 1 and self.map.map[self.seeker_pos[0]][j] != -1:
-                                    self.map.map[self.seeker_pos[0]][j] = 0
+                                    if self.map.map[self.seeker_pos[0]][j] != 2 and self.map.map[self.seeker_pos[0]][j] != 5:
+                                        self.map.map[self.seeker_pos[0]][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((self.seeker_pos[0], j))
                                     self.unobserved.add((self.seeker_pos[0], j))
@@ -94,7 +99,8 @@ class Seeker:
                         if j >= 0 and j < self.map.col:
                             if self.parent == None or (self.seeker_pos[0], j) not in self.parent.observed:
                                 if self.map.map[self.seeker_pos[0]][j] != 1 and self.map.map[self.seeker_pos[0]][j] != -1:
-                                    self.map.map[self.seeker_pos[0]][j] = 0
+                                    if self.map.map[self.seeker_pos[0]][j] != 2 and self.map.map[self.seeker_pos[0]][j] != 5:
+                                        self.map.map[self.seeker_pos[0]][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((self.seeker_pos[0], j))
                                     self.unobserved.add((self.seeker_pos[0], j))
@@ -106,7 +112,8 @@ class Seeker:
                                 if i >= 0 and i < self.map.row:
                                     if self.parent == None or (i, j) not in self.parent.observed:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                            self.map.map[i][j] = 0
+                                            if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                                self.map.map[i][j] = 0
                                             self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
@@ -117,7 +124,8 @@ class Seeker:
                                 if i >= 0 and i < self.map.row:
                                     if self.parent == None or (i, j) not in self.parent.observed:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                            self.map.map[i][j] = 0
+                                            if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                                self.map.map[i][j] = 0
                                             self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
@@ -135,7 +143,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -150,7 +159,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -165,7 +175,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -180,7 +191,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -192,7 +204,8 @@ class Seeker:
                         if i >= 0 and i < self.map.col and j >= 0 and j < self.map.row:
                             if self.parent == None or (j, i) not in self.parent.observed:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
-                                    self.map.map[j][i] = 0
+                                    if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
+                                        self.map.map[j][i] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
@@ -202,7 +215,8 @@ class Seeker:
                         if i >= 0 and i < self.map.col and j >= 0 and j < self.map.row:
                             if self.parent == None or (j, i) not in self.parent.observed:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
-                                    self.map.map[j][i] = 0
+                                    if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
+                                        self.map.map[j][i] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
@@ -212,7 +226,8 @@ class Seeker:
                         if i >= 0 and i < self.map.col and j >= 0 and j < self.map.row:
                             if self.parent == None or (j, i) not in self.parent.observed:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
-                                    self.map.map[j][i] = 0
+                                    if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
+                                        self.map.map[j][i] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
@@ -222,7 +237,8 @@ class Seeker:
                         if i >= 0 and i < self.map.col and j >= 0 and j < self.map.row:
                             if self.parent == None or (j, i) not in self.parent.observed:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
-                                    self.map.map[j][i] = 0
+                                    if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
+                                        self.map.map[j][i] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
@@ -234,7 +250,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -244,7 +261,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -254,7 +272,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -264,7 +283,8 @@ class Seeker:
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
-                                    self.map.map[i][j] = 0
+                                    if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
+                                        self.map.map[i][j] = 0
                                     self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
@@ -281,12 +301,15 @@ class Seeker:
                 if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                     if self.map.map[i][j] == 1 or self.map.map[i][j] == -1:
                         obstacles.append((i, j))
-                    elif self.map.map[i][j] == 0 or self.map.map[i][j] == 5:
+                    elif self.map.map[i][j] == 4:
+                        self.observed.add((i, j))
+                        self.unobserved.discard((i, j))
+                    elif self.map.map[i][j] == 0:
                         self.map.map[i][j] = 4
                         self.visionCount += 1
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
-                    elif self.map.map[i][j] == 2:
+                    elif self.map.map[i][j] == 2 or self.map.map[i][j] == 5:
                         self.visionCount += 1
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
@@ -294,6 +317,14 @@ class Seeker:
                         self.map.map[i][j] = 4
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
+                    # elif self.map.map[i][j] == 5:
+                    #     if (i, j) not in self.observed:
+                    #         self.observed.add((i, j))
+                    #         self.unobserved.discard((i, j))
+                    #         self.visionCount += 1
+                    #     else:
+                    #         self.observed.add((i, j))
+                    #         self.unobserved.discard((i, j))
         self.map.map[self.seeker_pos[0]][self.seeker_pos[1]] = 3
         for ob in obstacles:
             self.blockVision(ob)
@@ -313,35 +344,39 @@ class Seeker:
     def calculateManhattanDistance(self, pos):
         return abs(self.seeker_pos[0] - pos[0]) + abs(self.seeker_pos[1] - pos[1])
     
-    def generateNewStates(self, checkAStar = False):
+    def __lt__(self, other):
+        return self.path_cost + self.heuristic_cost < other.path_cost + self.heuristic_cost
+    
+    def checkGoal(self, goal_pos):
+        return self.seeker_pos == goal_pos
+    
+    def generateNewStates(self, hider):
         new_states = []
         valid_moves = self.checkValidMoves()
         for move in valid_moves:
             new_pos = (self.seeker_pos[0] + move[0], self.seeker_pos[1] + move[1])
             new_state = Seeker(self.map, new_pos, self.vision_range, self.visionCount, unobserved = self.unobserved, parent = self)
-            if checkAStar:
-                new_state.path_cost = self.path_cost + 1
-                new_state.heuristic_cost = self.calculateManhattanDistance(new_pos)
+            new_state.map.step += 1
+            if new_state.map.step == new_state.map.timeSignal:
+                new_state.map.map[hider.signal_pos[0]][hider.signal_pos[1]] = 5
+            new_state.path_cost = self.path_cost + 1
             new_state.updateMap()
             new_states.append(new_state)
         return new_states
     
-    def __lt__(self, other):
-        return self.path_cost + self.heuristic_cost < other.path_cost + other.heuristic_cost
-    
-    def checkGoal(self, goal_pos):
-        return self.seeker_pos == goal_pos
+    def updateHeuristicForListStates(self, list_states, goal_pos):
+        for state in list_states:
+            state.heuristic_cost = state.calculateManhattanDistance(goal_pos)
     
     def checkExplored(self, explored):
         return tuple(tuple(row) for row in self.map.map) in explored
-    
-    def findUnobservedSpace(self):
-        return random.choice(list(self.unobserved))
         
     def hillClimbing(self, hider):
         current_state = self
+        if hider.hider_pos in current_state.observed:
+            return current_state
         while True:
-            new_states = current_state.generateNewStates()
+            new_states = current_state.generateNewStates(hider)
             try:
                 new_states[0]
             except IndexError:
@@ -350,17 +385,11 @@ class Seeker:
             if best_state.visionCount <= current_state.visionCount:
                 break
             current_state = best_state
-            hider.step += 1
-            if hider.hider_pos in current_state.observed or hider.step == hider.timeSignal:
+            if hider.hider_pos in current_state.observed or hider.signal_pos in current_state.observed:
                 break
-            # print(current_state.map.print_map())
-            # print(current_state.visionCount)
-            # time.sleep(1)
         return current_state
     
-    def AStar(self, goal_pos, hider, checkRunningSignal = False):
-        if checkRunningSignal == True:
-            self.map.map[goal_pos[0]][goal_pos[1]] = 5
+    def AStar(self, goal_pos, hider, list_unobserved = None):
         frontier = []
         heapq.heappush(frontier, self)
         explored = set()
@@ -370,12 +399,13 @@ class Seeker:
             length_frontier -= 1
             if current_state.checkExplored(explored):
                 continue
+            if list_unobserved != None and current_state.seeker_pos in list_unobserved:
+                return current_state
             if current_state.checkGoal(goal_pos):
                 return current_state
-            if goal_pos != hider.hider_pos and hider.hider_pos in current_state.observed:
-                return current_state
             explored.add(tuple(tuple(row) for row in current_state.map.map))
-            new_states = current_state.generateNewStates(checkAStar = True)
+            new_states = current_state.generateNewStates(hider)
+            current_state.updateHeuristicForListStates(new_states, goal_pos)
             for new_state in new_states:
                 if not new_state.checkExplored(explored):
                     heapq.heappush(frontier, new_state)
@@ -392,42 +422,42 @@ def findSolution(initial_state, result):
     path.reverse()
     return path
 
-if __name__ == "__main__":
-    map2d = Map()
-    map2d.read_map("map1.txt")
-    seeker_pos = map2d.get_seeker_pos()
-    hider_pos = map2d.get_hider_pos()
-    print("Map:\n")
-    map2d.print_map()
-    seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
-    hider = Hider(hider_pos, 3, map2d)
-    seeker.updateMap()
-    print("Path:\n")
-    # result = seeker.hillClimbing(hider_pos)
-    # if result.checkGoal(hider_pos) == False:
-    #     result = result.AStar(hider_pos)
-    # path = findSolution(seeker, result)
-    result = seeker
-    while (True):
-        result = result.hillClimbing(hider)
-        if hider.hider_pos in result.observed:
-            result = result.AStar(hider.hider_pos, hider)
-            break
-        elif hider.step == hider.timeSignal:
-            result = result.AStar(hider.signal(), hider)
-            if hider.hider_pos in result.observed:
-                result = result.AStar(hider.hider_pos, hider)
-                break
-        else:
-            result = result.AStar(result.findUnobservedSpace(), hider)
-            if hider_pos in result.observed:
-                result = result.AStar(hider.hider_pos, hider)
-                break
-    count = 0
-    path = findSolution(seeker, result)
-    for state in path:
-        print(f"Step: {count}")
-        state.map.print_map()
-        print(state.visionCount)
-        print()
-        count += 1
+# if __name__ == "__main__":
+#     map2d = Map()
+#     map2d.read_map("map1.txt")
+#     seeker_pos = map2d.get_seeker_pos()
+#     hider_pos = map2d.get_hider_pos()
+#     print("Map:\n")
+#     map2d.print_map()
+#     seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
+#     hider = Hider(hider_pos, 3, map2d)
+#     seeker.updateMap()
+#     print("Path:\n")
+#     # result = seeker.hillClimbing(hider_pos)
+#     # if result.checkGoal(hider_pos) == False:
+#     #     result = result.AStar(hider_pos)
+#     # path = findSolution(seeker, result)
+#     result = seeker
+#     while (True):
+#         result = result.hillClimbing(hider)
+#         if hider.hider_pos in result.observed:
+#             result = result.AStar(hider.hider_pos, hider)
+#             break
+#         elif hider.step == hider.timeSignal:
+#             result = result.AStar(hider.signal(), hider)
+#             if hider.hider_pos in result.observed:
+#                 result = result.AStar(hider.hider_pos, hider)
+#                 break
+#         else:
+#             result = result.AStar(result.findUnobservedSpace(), hider)
+#             if hider_pos in result.observed:
+#                 result = result.AStar(hider.hider_pos, hider)
+#                 break
+#     count = 0
+#     path = findSolution(seeker, result)
+#     for state in path:
+#         print(f"Step: {count}")
+#         state.map.print_map()
+#         print(state.visionCount)
+#         print()
+#         count += 1

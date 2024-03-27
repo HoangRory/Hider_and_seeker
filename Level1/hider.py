@@ -2,12 +2,11 @@ from map import Map
 import random
 
 class Hider:
-    def __init__(self, hider_pos, radius, map2d, timeSignal = 5):
+    def __init__(self, hider_pos, radius, map2d):
         self.hider_pos = hider_pos
         self.radius = radius
         self.map2d = map2d
-        self.step = 0
-        self.timeSignal = timeSignal
+        self.signal_pos = self.signal()
     
     def signal(self):
         area = []
