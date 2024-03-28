@@ -68,7 +68,7 @@ def runMapGUI(beginningMap, path):
 
 if __name__ == "__main__":
     map2d = Map()
-    map2d.read_map("map2.txt")
+    map2d.read_map("map1.txt")
     seeker_pos = map2d.get_seeker_pos()
     hider_pos = map2d.get_hider_pos()
     seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
@@ -98,7 +98,6 @@ if __name__ == "__main__":
             if hider.hider_pos in result.observed:
                 result = result.AStar(hider.hider_pos, hider)
                 break
-
     # result = result.hillClimbing(hider)
     path = sk.findSolution(seeker, result)
     runMapGUI(map2d.map, path)

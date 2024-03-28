@@ -400,7 +400,6 @@ class Seeker:
             if current_state.checkExplored(explored):
                 continue
             if list_unobserved != None and current_state.seeker_pos in list_unobserved:
-                print(current_state.seeker_pos)
                 return current_state
             if current_state.checkGoal(goal_pos):
                 return current_state
@@ -423,42 +422,11 @@ def findSolution(initial_state, result):
     path.reverse()
     return path
 
-# if __name__ == "__main__":
-#     map2d = Map()
-#     map2d.read_map("map1.txt")
-#     seeker_pos = map2d.get_seeker_pos()
-#     hider_pos = map2d.get_hider_pos()
-#     print("Map:\n")
-#     map2d.print_map()
-#     seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
-#     hider = Hider(hider_pos, 3, map2d)
-#     seeker.updateMap()
-#     print("Path:\n")
-#     # result = seeker.hillClimbing(hider_pos)
-#     # if result.checkGoal(hider_pos) == False:
-#     #     result = result.AStar(hider_pos)
-#     # path = findSolution(seeker, result)
-#     result = seeker
-#     while (True):
-#         result = result.hillClimbing(hider)
-#         if hider.hider_pos in result.observed:
-#             result = result.AStar(hider.hider_pos, hider)
-#             break
-#         elif hider.step == hider.timeSignal:
-#             result = result.AStar(hider.signal(), hider)
-#             if hider.hider_pos in result.observed:
-#                 result = result.AStar(hider.hider_pos, hider)
-#                 break
-#         else:
-#             result = result.AStar(result.findUnobservedSpace(), hider)
-#             if hider_pos in result.observed:
-#                 result = result.AStar(hider.hider_pos, hider)
-#                 break
-#     count = 0
-#     path = findSolution(seeker, result)
-#     for state in path:
-#         print(f"Step: {count}")
-#         state.map.print_map()
-#         print(state.visionCount)
-#         print()
-#         count += 1
+if __name__ == "__main__":
+    map2d = Map()
+    map2d.read_map("map1.txt")
+    seeker_pos = map2d.get_seeker_pos()
+    Seeker = Seeker(map2d, seeker_pos)
+    Seeker.updateMap()
+    Seeker.map.print_map()
+    
