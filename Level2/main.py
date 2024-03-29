@@ -63,41 +63,125 @@ def runMapGUI(beginningMap, path):
         if step_index < len(path):
             map_gui.map_data = path[step_index].map.map
             map_gui.draw_map()
-            pygame.time.wait(200)  # Wait for 1 second
+            pygame.time.wait(200) # Delay between steps
             step_index += 1
 
+def encounterHider(seeker, list_hider_pos, list_hider_signal):
+    found = list_hider_pos.intersection(seeker.observed)
+    while found != set():
+        for _ in found:
+            min_pos = _
+            break
+        min_distance = seeker.calculateManhattanDistance(min_pos)
+        for pos in found:
+            val = seeker.calculateManhattanDistance(pos)
+            if val < min_distance:
+                min_distance = val
+                min_pos = pos
+        seeker = seeker.AStar(min_pos, list_hider_pos, list_hider_signal)
+        for i in range(len(list_hider_signal["hider"])):
+            if list_hider_signal["hider"][i].hider_pos == min_pos:
+                hider = list_hider_signal["hider"][i]
+                break
+        list_hider_signal["hider_signal"].discard(hider.signal_pos)
+        list_hider_pos.discard(hider.hider_pos)
+        found = list_hider_pos.intersection(seeker.observed)
+    return {"seeker": seeker, "list_hider_pos": list_hider_pos, "list_hider_signal": list_hider_signal}
+
+def encounterSignal(seeker, list_hider_pos, list_hider_signal):
+    found = list_hider_signal["hider_signal"].intersection(seeker.observed)
+    checkEncounterHider = False
+    while found != set():
+        for _ in found:
+            min_pos = _
+            break
+        min_distance = seeker.calculateManhattanDistance(min_pos)
+        for pos in found:
+            val = seeker.calculateManhattanDistance(pos)
+            if val < min_distance:
+                min_distance = val
+                min_pos = pos
+        seeker = seeker.AStar(min_pos, list_hider_pos, list_hider_signal)
+        temp = seeker
+        path = []
+        while seeker.parent != None:
+            path.append(seeker)
+            seeker = seeker.parent
+        path.reverse()
+        for i in range(len(path)):
+            if list_hider_pos.intersection(path[i].observed) != set():
+                temp = path[i]
+                checkEncounterHider = True
+                break
+        seeker = temp
+        if checkEncounterHider == True:
+            return encounterHider(seeker, list_hider_pos, list_hider_signal)
+        for i in range(len(list_hider_signal["hider"])):
+            if list_hider_signal["hider"][i].signal_pos == min_pos:
+                hider = list_hider_signal["hider"][i]
+                break
+        list_hider_signal["hider_signal"].discard(min_pos)
+        found = list_hider_signal["hider_signal"].intersection(seeker.observed)
+    return {"seeker": seeker, "list_hider_pos": list_hider_pos, "list_hider_signal": list_hider_signal}
+
+def search(seeker, list_hider_pos, list_hider_signal):
+    result = seeker
+    check = False
+    while list_hider_pos != set():
+        result = result.hillClimbing(list_hider_pos, list_hider_signal, check)
+        beginAStar = result
+        if list_hider_pos.intersection(result.observed) != set():
+            res_dict = encounterHider(result, list_hider_pos, list_hider_signal)
+            result = res_dict["seeker"]
+            list_hider_pos = res_dict["list_hider_pos"]
+            list_hider_signal = res_dict["list_hider_signal"]
+        elif list_hider_signal["hider_signal"].intersection(result.observed) != set():
+            res_dict = encounterSignal(result, list_hider_pos, list_hider_signal)
+            result = res_dict["seeker"]
+            list_hider_pos = res_dict["list_hider_pos"]
+            list_hider_signal = res_dict["list_hider_signal"]
+        else:
+            list_unobserved = result.unobserved
+            result = result.BFS(list_hider_pos, list_hider_signal, list_unobserved)
+            temp = result
+            path = []
+            while  result.parent != None and result.parent != beginAStar:
+                path.append(result)
+                result = result.parent
+            path.reverse()
+            for i in range(len(path)):
+                if path[i].seeker_pos in list_unobserved or list_hider_pos.intersection(path[i].observed) != set():
+                    temp = path[i]
+                    break
+            result = temp
+            if list_hider_pos.intersection(result.observed) != set():
+                res_dict = encounterHider(result, list_hider_pos, list_hider_signal)
+                result = res_dict["seeker"]
+                list_hider_pos = res_dict["list_hider_pos"]
+                list_hider_signal = res_dict["list_hider_signal"]
+    return result
+        
 if __name__ == "__main__":
     map2d = Map()
     map2d.read_map("map1.txt")
     seeker_pos = map2d.get_seeker_pos()
-    hider_pos = map2d.get_hider_pos()
-    seeker = Seeker(map2d = map2d, seeker_pos = seeker_pos)
-    hider = Hider(hider_pos, 3, map2d)
+    list_hider = map2d.get_hider_pos()
+    list_hider_pos = set()
+    for hider in list_hider:
+        list_hider_pos.add(hider)
+    list_hider_signal = {
+        "hider_signal": set(),
+        "hider" : []
+    }
+    for hider_pos in list_hider_pos:
+        hider = Hider(hider_pos, 3, map2d)
+        list_hider_signal["hider_signal"].add(hider.signal_pos)
+        list_hider_signal["hider"].append(hider)
+    seeker = Seeker(map2d, seeker_pos)  
     seeker.updateMap()
     result = seeker
-    while True:
-        result = result.hillClimbing(hider)
-        if hider.hider_pos in result.observed:
-            result = result.AStar(hider.hider_pos, hider)
-            break
-        elif hider.signal_pos in result.observed:
-            result = result.AStar(hider.signal_pos, hider)
-            temp = result
-            path = sk.findSolution(seeker, result)
-            for i in range(len(path)):
-                if hider.hider_pos in path[i].observed:
-                    temp = path[i]
-                    break
-            result = temp
-            result = result.hillClimbing(hider)
-        else:
-            for val in result.unobserved:
-                goal_pos = val
-                break
-            result = result.AStar(goal_pos, hider, result.unobserved)
-            if hider.hider_pos in result.observed:
-                result = result.AStar(hider.hider_pos, hider)
-                break
-    # result = result.hillClimbing(hider)
-    path = sk.findSolution(seeker, result)
+    result = search(result, list_hider_pos, list_hider_signal)
+    path =sk.findSolution(seeker, result)
     runMapGUI(map2d.map, path)
+    print(len(path) * -1 + 20 * len(list_hider_signal["hider"]))
+

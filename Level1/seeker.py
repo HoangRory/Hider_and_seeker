@@ -42,7 +42,7 @@ class Seeker:
                                 if self.map.map[i][self.seeker_pos[1]] != 1 and self.map.map[i][self.seeker_pos[1]] != -1: 
                                     if self.map.map[i][self.seeker_pos[1]] != 2 and self.map.map[i][self.seeker_pos[1]] != 5:
                                         self.map.map[i][self.seeker_pos[1]] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, self.seeker_pos[1]))
                                     self.unobserved.add((i, self.seeker_pos[1]))
                 elif self.seeker_pos[0] < obstacle_pos[0]:
@@ -52,7 +52,7 @@ class Seeker:
                                 if self.map.map[i][self.seeker_pos[1]] != 1 and self.map.map[i][self.seeker_pos[1]] != -1:
                                     if self.map.map[i][self.seeker_pos[1]] != 2 and self.map.map[i][self.seeker_pos[1]] != 5:
                                         self.map.map[i][self.seeker_pos[1]] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, self.seeker_pos[1]))
                                     self.unobserved.add((i, self.seeker_pos[1]))
             else:
@@ -65,7 +65,7 @@ class Seeker:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                             if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                                 self.map.map[i][j] = 0
-                                            self.visionCount -= 1
+                                            # self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
                 else:
@@ -77,7 +77,7 @@ class Seeker:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                             if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                                 self.map.map[i][j] = 0
-                                            self.visionCount -= 1
+                                            # self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
     
@@ -91,7 +91,7 @@ class Seeker:
                                 if self.map.map[self.seeker_pos[0]][j] != 1 and self.map.map[self.seeker_pos[0]][j] != -1:
                                     if self.map.map[self.seeker_pos[0]][j] != 2 and self.map.map[self.seeker_pos[0]][j] != 5:
                                         self.map.map[self.seeker_pos[0]][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((self.seeker_pos[0], j))
                                     self.unobserved.add((self.seeker_pos[0], j))
                 elif self.seeker_pos[1] < obstacle_pos[1]:
@@ -101,7 +101,7 @@ class Seeker:
                                 if self.map.map[self.seeker_pos[0]][j] != 1 and self.map.map[self.seeker_pos[0]][j] != -1:
                                     if self.map.map[self.seeker_pos[0]][j] != 2 and self.map.map[self.seeker_pos[0]][j] != 5:
                                         self.map.map[self.seeker_pos[0]][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((self.seeker_pos[0], j))
                                     self.unobserved.add((self.seeker_pos[0], j))
             else:
@@ -114,7 +114,7 @@ class Seeker:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                             if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                                 self.map.map[i][j] = 0
-                                            self.visionCount -= 1
+                                            # self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
                 else:
@@ -126,7 +126,7 @@ class Seeker:
                                         if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                             if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                                 self.map.map[i][j] = 0
-                                            self.visionCount -= 1
+                                            # self.visionCount -= 1
                                             self.observed.discard((i, j))
                                             self.unobserved.add((i, j))
     
@@ -145,7 +145,7 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] > obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
@@ -161,7 +161,7 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] < obstacle_pos[1]:
@@ -177,7 +177,7 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
@@ -193,7 +193,7 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
         
@@ -206,7 +206,7 @@ class Seeker:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
                                     if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
                                         self.map.map[j][i] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
             elif self.seeker_pos[0] > obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
@@ -217,7 +217,7 @@ class Seeker:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
                                     if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
                                         self.map.map[j][i] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] < obstacle_pos[1]:
@@ -228,7 +228,7 @@ class Seeker:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
                                     if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
                                         self.map.map[j][i] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
@@ -239,7 +239,7 @@ class Seeker:
                                 if self.map.map[j][i] != 1 and self.map.map[j][i] != -1:
                                     if self.map.map[j][i] != 2 and self.map.map[j][i] != 5:
                                         self.map.map[j][i] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((j, i))
                                     self.unobserved.add((j, i))
         
@@ -252,7 +252,7 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] > obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
@@ -263,29 +263,29 @@ class Seeker:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] < obstacle_pos[1]:
-                for i in range(obstacle_pos[0], self.seeker_pos[0] + self.vision_range + 1):
+                for i in range(obstacle_pos[0], self.seeker_pos[0] + self.vision_range):
                     for j in range(obstacle_pos[1] + 1, self.seeker_pos[1] + self.vision_range + 1):
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
             elif self.seeker_pos[0] < obstacle_pos[0] and self.seeker_pos[1] > obstacle_pos[1]:
-                for i in range(obstacle_pos[0], self.seeker_pos[0] + self.vision_range + 1):
+                for i in range(obstacle_pos[0], self.seeker_pos[0] + self.vision_range):
                     for j in range(obstacle_pos[1] - 1, self.seeker_pos[1] - self.vision_range - 1, -1):
                         if i >= 0 and i < self.map.row and j >= 0 and j < self.map.col:
                             if self.parent == None or (i, j) not in self.parent.observed:
                                 if self.map.map[i][j] != 1 and self.map.map[i][j] != -1:
                                     if self.map.map[i][j] != 2 and self.map.map[i][j] != 5:
                                         self.map.map[i][j] = 0
-                                    self.visionCount -= 1
+                                    # self.visionCount -= 1
                                     self.observed.discard((i, j))
                                     self.unobserved.add((i, j))
     
@@ -306,11 +306,11 @@ class Seeker:
                         self.unobserved.discard((i, j))
                     elif self.map.map[i][j] == 0:
                         self.map.map[i][j] = 4
-                        self.visionCount += 1
+                        # self.visionCount += 1
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
                     elif self.map.map[i][j] == 2 or self.map.map[i][j] == 5:
-                        self.visionCount += 1
+                        # self.visionCount += 1
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
                     elif self.map.map[i][j] == 3:
@@ -330,6 +330,7 @@ class Seeker:
             self.blockVision(ob)
         if self.parent != None:
             self.observed = self.observed.union(self.parent.observed)
+        self.visionCount = len(self.observed)
     
     def checkValidMoves(self):
         valid_moves = []
@@ -371,22 +372,35 @@ class Seeker:
     def checkExplored(self, explored):
         return tuple(tuple(row) for row in self.map.map) in explored
         
-    def hillClimbing(self, hider):
+    def hillClimbing(self, hider, checkSignal = False):
         current_state = self
         if hider.hider_pos in current_state.observed:
             return current_state
+        if checkSignal == False:
+            if hider.signal_pos in current_state.observed:
+                return current_state
         while True:
             new_states = current_state.generateNewStates(hider)
+            # for i in range(len(new_states)):
+            #     new_states[i].map.print_map()
+            #     print(new_states[i].visionCount)
+            #     print()
             try:
                 new_states[0]
             except IndexError:
                 break
-            best_state = max(new_states, key = lambda x: x.visionCount)
-            if best_state.visionCount <= current_state.visionCount:
+            # Get a list of all the states with the highest visionCount
+            best_states = [state for state in new_states if state.visionCount == max(new_states, key = lambda x: x.visionCount).visionCount]
+            if best_states[0].visionCount <= current_state.visionCount:
                 break
-            current_state = best_state
-            if hider.hider_pos in current_state.observed or hider.signal_pos in current_state.observed:
+            current_state = random.choice(best_states)
+            if hider.hider_pos in current_state.observed:
                 break
+            if checkSignal == False:
+                if hider.signal_pos in current_state.observed:
+                    break
+            new_states.clear()
+            best_states.clear()
         return current_state
     
     def AStar(self, goal_pos, hider, list_unobserved = None):
@@ -397,16 +411,33 @@ class Seeker:
         while length_frontier > 0:
             current_state = heapq.heappop(frontier)
             length_frontier -= 1
+            if list_unobserved != None and current_state.seeker_pos in list_unobserved:
+                return current_state
             if current_state.checkExplored(explored):
                 continue
-            if list_unobserved != None and current_state.seeker_pos in list_unobserved:
-                print(current_state.seeker_pos)
-                return current_state
             if current_state.checkGoal(goal_pos):
                 return current_state
             explored.add(tuple(tuple(row) for row in current_state.map.map))
             new_states = current_state.generateNewStates(hider)
             current_state.updateHeuristicForListStates(new_states, goal_pos)
+            for new_state in new_states:
+                if not new_state.checkExplored(explored):
+                    heapq.heappush(frontier, new_state)
+                    length_frontier += 1
+
+    def BFS(self, hider, list_unobserved):
+        frontier = [self]
+        explored = set()
+        length_frontier = 1
+        while length_frontier > 0:
+            current_state = heapq.heappop(frontier)
+            length_frontier -= 1
+            if current_state.checkExplored(explored):
+                continue
+            if current_state.seeker_pos in list_unobserved:
+                return current_state
+            explored.add(tuple(tuple(row) for row in current_state.map.map))
+            new_states = current_state.generateNewStates(hider)
             for new_state in new_states:
                 if not new_state.checkExplored(explored):
                     heapq.heappush(frontier, new_state)
@@ -462,3 +493,5 @@ def findSolution(initial_state, result):
 #         print(state.visionCount)
 #         print()
 #         count += 1
+
+    

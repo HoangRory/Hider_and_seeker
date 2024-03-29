@@ -1,5 +1,4 @@
 from pathlib import Path
-from hider import Hider
 
 class Map:
     def __init__(self, row = 0, col = 0, step = 0, timeSignal = 5):
@@ -8,7 +7,6 @@ class Map:
         self.map = []
         self.obstacles = []
         self.list_hider = []
-        
         self.step = step
         self.timeSignal = timeSignal
     
@@ -39,14 +37,13 @@ class Map:
             for j in range(self.col):
                 if self.map[i][j] == 3:
                     return (i, j)
-        return None
     
     def get_hider_pos(self):
         for i in range(self.row):
             for j in range(self.col):
                 if self.map[i][j] == 2:
-                    self.list_hider.append(Hider((i, j), 3, self))
-        return None
+                    self.list_hider.append((i, j))
+        return self.list_hider
     
     def print_map(self):
         for i in range(self.row):

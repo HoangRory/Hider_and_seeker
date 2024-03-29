@@ -1,4 +1,5 @@
 import random
+from map import Map
 
 class Hider:
     def __init__(self, hider_pos, radius, map2d):
