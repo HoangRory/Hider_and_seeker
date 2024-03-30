@@ -8,11 +8,13 @@ WIDTH = 1280
 pygame.init()
 
 screen = pygame.display.set_mode((WIDTH, HEITGH))
+menuBG = pygame.image.load("assets/MenuBG.png")
 
 def menu():
     pygame.display.set_caption("Hide and seek")
     
     while True:
+        screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         menuText = pygame.font.Font(None, 100).render("HIDE AND SEEK", True, (255, 255, 255))
         menuRect = menuText.get_rect(center=(WIDTH/2, HEITGH/2 - 200))
@@ -40,7 +42,7 @@ def menu():
         
 def start():
     while True:
-        screen.fill((0, 0, 0))
+        screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = pygame.font.Font(None, 75).render("Choose a level", True, (255, 255, 255))
         promptRect = promptText.get_rect(center=(WIDTH/2, HEITGH/2 - 200))
