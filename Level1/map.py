@@ -1,13 +1,17 @@
 from pathlib import Path
+import random
 
 class Map:
-    def __init__(self, row = 0, col = 0, step = 0, timeSignal = 5):
+    def __init__(self, row = 0, col = 0, step = 0, timeSignal = 5, hider_radius = 3):
         self.row = row
         self.col = col
         self.map = []
-        self.obstacles = []
+        self.obstacles = set()
         self.step = step
         self.timeSignal = timeSignal
+        self.hider_pos = None
+        self.hider_signal_pos = None
+        self.hider_radius = hider_radius
     
     def read_map(self, file_name, level = 1):
         #read map from file with name file_name in folder "Input/Level{level}" 
@@ -43,25 +47,24 @@ class Map:
                 if self.map[i][j] == 2:
                     return (i, j)
         return None
-
-    def get_obstacles(self):
-        list_obstacles = []
-        for i in range(self.row):
-            for j in range(self.col):
-                if self.map[i][j] == -1:
-                    list_obstacles.append((i, j))
-        return list_obstacles
-    
-    def get_walls(self):
-        list_walls = []
-        for i in range(self.row):
-            for j in range(self.col):
-                if self.map[i][j] == 1:
-                    list_walls.append((i, j))
-        return list_walls
     
     def print_map(self):
         for i in range(self.row):
             for j in range(self.col):
                 print(self.map[i][j], end = " ")
             print()
+    
+    def signal(self):
+        area = []
+        for i in range(self.hider_pos[0] - self.hider_radius, self.hider_pos[0] + self.hider_radius + 1):
+             for j in range(self.hider_pos[1] - self.hider_radius, self.hider_pos[1] + self.hider_radius + 1):
+                if i >= 0 and i < self.row and j >= 0 and j < self.col:
+                    if self.map[i][j] == 0:
+                        area.append((i, j))
+        return random.choice(area)
+    
+    def get_walls_and_obstacles(self):
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == -1 or self.map[i][j] == 1:
+                    self.obstacles.add((i, j))
