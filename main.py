@@ -1,6 +1,7 @@
 import pygame
 import sys
 from button import Button
+import os
 
 HEITGH = 600
 WIDTH = 800
@@ -60,14 +61,18 @@ def start():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if level1Button.checkInput(mousePos):
+                    level1()
+                elif level2Button.checkInput(mousePos):
+                    level2()
 
         pygame.display.update()
         
 def level1():
-    pass
-
+    os.system("python Level1/main.py")
 def level2():
-    pass
+    os.system("python Level2/main.py")
         
         
 menu()
