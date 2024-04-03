@@ -171,7 +171,7 @@ def search(seeker):
 
 if __name__ == "__main__":
     map2d = Map()
-    map2d.read_map("map2.txt")
+    map2d.read_map("map1.txt")
     seeker_pos = map2d.get_seeker_pos()
     hider_pos = map2d.get_hider_pos()
     map2d.get_walls_and_obstacles()

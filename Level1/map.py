@@ -6,7 +6,7 @@ class Map:
         self.row = row
         self.col = col
         self.map = []
-        self.obstacles = set()
+        self.obstacles = []
         self.step = step
         self.timeSignal = timeSignal
         self.hider_pos = None
@@ -64,6 +64,7 @@ class Map:
         return random.choice(area)
     
     def get_walls_and_obstacles(self):
+        self.obstacles = set()
         for i in range(self.row):
             for j in range(self.col):
                 if self.map[i][j] == -1 or self.map[i][j] == 1:
