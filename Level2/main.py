@@ -257,13 +257,15 @@ def search(seeker):
                 distance = result.calculateManhattanDistance(pos)
                 if distance < min_distance and distance <= 2 * result.map.hider_radius:
                     min_distance = distance
+            hider_signal_pos = None
             for pos in foundHiderSignal:
                 distance = result.calculateManhattanDistance(pos)
                 if distance == min_distance:
                     hider_signal_pos = pos
                     break
-            result = encounterSignal(result, beginAStar, hider_signal_pos)
-            continue
+            if  hider_signal_pos != None:
+                result = encounterSignal(result, beginAStar, hider_signal_pos)
+                continue
         result = encounterLocalMaximum(result, beginAStar)
     return result
 
