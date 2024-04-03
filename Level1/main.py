@@ -156,7 +156,7 @@ def search(seeker):
         if result.map.hider_pos in result.observed:
             result = encounterHider(result, beginAStar)
             break
-        elif result.map.hider_signal_pos in result.observed:
+        elif result.map.hider_signal_pos in result.observed and result.calculateManhattanDistance(result.map.hider_signal_pos) <= 2 * result.map.hider_radius:
             check = True
             result = encounterSignal(result, beginAStar)
             if result.seeker_pos == result.map.hider_pos:
