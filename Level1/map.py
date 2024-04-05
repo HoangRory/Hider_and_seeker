@@ -54,15 +54,24 @@ class Map:
                 print(self.map[i][j], end = " ")
             print()
     
-    def signal(self):
+    def signal(self, hider_pos):
         area = []
-        for i in range(self.hider_pos[0] - self.hider_radius, self.hider_pos[0] + self.hider_radius + 1):
-             for j in range(self.hider_pos[1] - self.hider_radius, self.hider_pos[1] + self.hider_radius + 1):
+        for i in range(hider_pos[0] - self.hider_radius, hider_pos[0] + self.hider_radius + 1):
+            for j in range(hider_pos[1] - self.hider_radius, hider_pos[1] + self.hider_radius + 1):
                 if i >= 0 and i < self.row and j >= 0 and j < self.col:
                     if self.map[i][j] == 0:
                         area.append((i, j))
         return random.choice(area)
     
+    def potentialSignalArea(self, hider_pos):
+        area = []
+        for i in range(hider_pos[0] - self.hider_radius, hider_pos[0] + self.hider_radius + 1):
+            for j in range(hider_pos[1] - self.hider_radius, hider_pos[1] + self.hider_radius + 1):
+                if i >= 0 and i < self.row and j >= 0 and j < self.col:
+                    if self.map[i][j] == 0:
+                        area.append((i, j))
+        return area
+
     def get_walls_and_obstacles(self):
         self.obstacles = set()
         for i in range(self.row):
