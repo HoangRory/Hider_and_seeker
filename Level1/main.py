@@ -91,8 +91,10 @@ def encounterHider(seeker, beginAStar, potentialSignalArea):
                 path[i].map.map[signal_pos[0]][signal_pos[1]] = 5
             path[i].map.hider_signal_pos = signal_pos
     result = path[-1]
-    if result.map.hider_pos in result.observed:
-        result = result.AStar(result.map.hider_pos)
+    if result.map.hider_signal_pos in result.observed:
+        result.map.map[result.map.hider_signal_pos[0]][result.map.hider_signal_pos[1]] = 4
+    else:
+        result.map.map[result.map.hider_signal_pos[0]][result.map.hider_signal_pos[1]] = 0
     return result
 
 def encounterSignal(seeker, beginAStar, potentialSignalArea):
@@ -242,7 +244,7 @@ def search(seeker, potentialSignalArea):
 
 if __name__ == "__main__":
     map2d = Map()
-    map2d.read_map("map2.txt")
+    map2d.read_map("map1.txt")
     seeker_pos = map2d.get_seeker_pos()
     hider_pos = map2d.get_hider_pos()
     map2d.get_walls_and_obstacles()

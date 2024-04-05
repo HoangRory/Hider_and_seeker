@@ -2,6 +2,9 @@ import pygame
 from map import Map
 from seeker import Seeker
 import seeker as sk
+import random
+import copy
+import time
 
 class MapGUI:
     def __init__(self, map_data, tile_size=20):
@@ -27,10 +30,6 @@ class MapGUI:
         pygame.display.set_caption('Hide and Seek')
 
     def draw_map(self):
-        # current_time = pygame.time.get_ticks()
-        # if current_time - self.last_blink_time >= self.signal_blink_interval:
-        #     self.last_blink_time = current_time
-        #     self.toggle_signal_visibility()
         self.screen.fill((255, 255, 255))  # Fill background with white
         # Draw each tile based on map data
         for y in range(len(self.map_data)):
@@ -62,235 +61,322 @@ def runMapGUI(beginningMap, path):
         if step_index < len(path):
             map_gui.map_data = path[step_index].map.map
             map_gui.draw_map()
-            pygame.time.wait(200)  # Wait for 1 second
+            pygame.time.wait(100)
             step_index += 1
 
-def encounterHider(seeker, beginAStar, hider_pos):
+def encounterHider(seeker, beginAStar, hider_pos, list_potential_hider_signal, current_signal):
     result = seeker
     result = result.AStar(hider_pos)
+    if result.map.map == beginAStar.map.map:
+        return result, current_signal
     path = []
-    temp = result
-    while result.parent != None and result.parent != beginAStar:
+    while result.parent != None and result.map.map != beginAStar.map.map:
         path.append(result)
         result = result.parent
     path.reverse()
+    temp = None
+    original_signal = current_signal.copy()
     for i in range(len(path)):
-        if path[i].seeker_pos in path[i].map.hider_pos:
-            temp = path[i]
-            break
-        if path[i].map.step > path[i].map.timeSignal and path[i].map.step % path[i].map.timeSignal == 0:
-            path[i].map.hider_signal = set()
-            for hider_signal in path[i].map.hider:
-                if path[i].seeker_pos == hider_signal["signal_pos"]:
+        if path[i].map.step >= path[i].map.timeSignal:
+            for signal in original_signal:
+                if signal == path[i].seeker_pos:
                     pass
-                elif hider_signal["signal_pos"] in path[i].observed:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 4
+                elif signal in path[i].observed:
+                    path[i].map.map[signal[0]][signal[1]] = 4
                 else:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 0
-                hider_signal["signal_pos"] = path[i].map.signal(hider_signal["hider_pos"])
-                path[i].map.hider_signal.add(hider_signal["signal_pos"])
-                path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 5
-            temp = path[i]
-            break
-    result = temp
-    foundHider = result.map.hider_pos.intersection(result.observed)
-    if foundHider != set():
-        hider_pos = None
+                    path[i].map.map[signal[0]][signal[1]] = 0
+            if path[i].map.step % path[i].map.timeSignal == 0:
+                current_signal = set()
+                for hider in list_potential_hider_signal:
+                    if hider["hider_pos"] in path[i].map.hider_pos:
+                        signal = random.choice(hider["potential_signal"])
+                        while signal == path[i].seeker_pos:
+                            signal = random.choice(hider["potential_signal"])
+                        current_signal.add(signal)
+            for signal in current_signal:
+                path[i].map.map[signal[0]][signal[1]] = 5
+            path[i].map.map[path[i].seeker_pos[0]][path[i].seeker_pos[1]] = 3
+    result = path[-1]
+    for hider in list_potential_hider_signal:
+        result.map.hider_pos.remove(hider_pos)
+        break
+    foundSignal = current_signal.intersection(result.observed)
+    if foundSignal != set():
+        signal_pos = None
         min_distance = 1e9
-        for pos in foundHider:
-            hider_pos = pos
-            distance = result.calculateManhattanDistance(pos)
-            if distance < min_distance:
+        for signal in foundSignal:
+            distance = result.calculateManhattanDistance(signal)
+            if distance < min_distance and distance <= 2 * result.map.hider_radius - random.randint(0, result.map.hider_radius) and signal not in result.parent.observed:
                 min_distance = distance
-        for pos in foundHider:
-            distance = result.calculateManhattanDistance(pos)
-            if distance == min_distance:
-                hider_pos = pos
-                break
-        result = result.AStar(hider_pos)
-        result.map.hider_pos.discard(hider_pos)
-        for hider in result.map.hider:
-            if hider["hider_pos"] == hider_pos:
-                result.map.hider.remove(hider)
-                result.map.hider_signal.discard(hider["signal_pos"])
-                break
-    return result
+                signal_pos = signal
+        if signal_pos != None:
+            beginAStar = Seeker(result.map, result.seeker_pos)
+            res = encounterSignal(result, beginAStar, signal_pos, list_potential_hider_signal, current_signal)
+            result = res[0]
+            current_signal = res[1]
+            return result, current_signal
+    return result, current_signal
 
-def encounterSignal(seeker, beginAStar, hider_signal_pos):
+def encounterSignal(seeker, beginAStar, signal_pos, list_potential_hider_signal, current_signal):
     result = seeker
-    result = result.AStar(hider_signal_pos)
+    result = result.AStar(signal_pos)
+    if result.map.map == beginAStar.map.map:
+        return result, current_signal
     path = []
-    temp = result
-    while result.parent != None and result.parent != beginAStar:
+    while result.parent != None and result.map.map != beginAStar.map.map:
         path.append(result)
         result = result.parent
     path.reverse()
+    temp = None
+    original_signal = current_signal.copy()
     for i in range(len(path)):
-        if path[i].map.step > path[i].map.timeSignal and path[i].map.step % path[i].map.timeSignal == 0:
-            path[i].map.hider_signal = set()
-            for hider_signal in path[i].map.hider:
-                if path[i].seeker_pos == hider_signal["signal_pos"]:
+        if path[i].map.step >= path[i].map.timeSignal:
+            for signal in original_signal:
+                if signal == path[i].seeker_pos:
                     pass
-                elif hider_signal["signal_pos"] in path[i].observed:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 4
+                elif signal in path[i].observed:
+                    path[i].map.map[signal[0]][signal[1]] = 4
                 else:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 0
-                hider_signal["signal_pos"] = path[i].map.signal(hider_signal["hider_pos"])
-                path[i].map.hider_signal.add(hider_signal["signal_pos"])
-                path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 5
-            temp = path[i]
-            break
+                    path[i].map.map[signal[0]][signal[1]] = 0
+            if path[i].map.step % path[i].map.timeSignal == 0:
+                current_signal = set()
+                for hider in list_potential_hider_signal:
+                    if hider["hider_pos"] in path[i].map.hider_pos:
+                        signal = random.choice(hider["potential_signal"])
+                        while signal == path[i].seeker_pos:
+                            signal = random.choice(hider["potential_signal"])
+                        current_signal.add(signal)
+            for signal in current_signal:
+                path[i].map.map[signal[0]][signal[1]] = 5
+            path[i].map.map[path[i].seeker_pos[0]][path[i].seeker_pos[1]] = 3
         if path[i].map.hider_pos.intersection(path[i].observed) != set():
             temp = path[i]
             break
+        if i == len(path) - 1:
+            temp = path[i]
     result = temp
     foundHider = result.map.hider_pos.intersection(result.observed)
     if foundHider != set():
+        check = True
         hider_pos = None
         min_distance = 1e9
-        for pos in foundHider:
-            hider_pos = pos
-            distance = result.calculateManhattanDistance(pos)
+        for hider in foundHider:
+            distance = result.calculateManhattanDistance(hider)
             if distance < min_distance:
                 min_distance = distance
-        for pos in foundHider:
-            distance = result.calculateManhattanDistance(pos)
-            if distance == min_distance:
-                hider_pos = pos
-                break
-        result = encounterHider(result, result, hider_pos)
-        return result
-    foundHiderSignal = result.map.hider_signal.intersection(result.observed)
-    if foundHiderSignal != set():
-        hider_signal_pos = None
+                hider_pos = hider
+        beginAStar = Seeker(result.map, result.seeker_pos)
+        res = encounterHider(result, beginAStar, hider_pos, list_potential_hider_signal, current_signal)
+        result = res[0]
+        current_signal = res[1]
+        return result, current_signal
+    foundSignal = current_signal.intersection(result.observed)
+    if foundSignal != set():
+        signal_pos = None
         min_distance = 1e9
-        for pos in foundHiderSignal:
-            hider_signal_pos = pos
-            distance = result.calculateManhattanDistance(pos)
-            if distance < min_distance and distance <= 2 * result.map.hider_radius:
+        for signal in foundSignal:
+            distance = result.calculateManhattanDistance(signal)
+            if distance < min_distance and distance <= 2 * result.map.hider_radius - random.randint(0, result.map.hider_radius) and signal not in result.parent.observed:
                 min_distance = distance
-        for pos in foundHiderSignal:
-            distance = result.calculateManhattanDistance(pos)
-            if distance == min_distance:
-                hider_signal_pos = pos
-                break
-        result = encounterSignal(result, result, hider_signal_pos)
-        return result
-    return result
-
-def encounterLocalMaximum(seeker, beginAStar):
+                signal_pos = signal
+        if signal_pos != None:
+            beginAStar = Seeker(result.map, result.seeker_pos)
+            res = encounterSignal(result, beginAStar, signal_pos, list_potential_hider_signal, current_signal)
+            result = res[0]
+            current_signal = res[1]
+            return result, current_signal
+    return result, current_signal
+    
+def encounterLocalMaximum(seeker, beginAStar, list_potential_hider_signal, current_signal):
     result = seeker
-    list_unobserved = result.unobserved
+    list_unobserved = result.unobserved.copy()
     result = result.BFS(list_unobserved)
-    temp = result
+    if result.map.map == beginAStar.map.map:
+        return result, current_signal
     path = []
-    while  result.parent != None and result != beginAStar:
+    while result.parent != None and result.map.map != beginAStar.map.map:
         path.append(result)
         result = result.parent
     path.reverse()
+    temp = None
+    original_signal = current_signal.copy()
     for i in range(len(path)):
-        if path[i].map.step >= path[i].map.timeSignal and path[i].map.step % path[i].map.timeSignal == 0:
-            path[i].map.hider_signal = set()
-            for hider_signal in path[i].map.hider:
-                if path[i].seeker_pos == hider_signal["signal_pos"]:
+        if path[i].map.step >= path[i].map.timeSignal:
+            for signal in original_signal:
+                if signal == path[i].seeker_pos:
                     pass
-                elif hider_signal["signal_pos"] in path[i].observed:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 4
+                elif signal in path[i].observed:
+                    path[i].map.map[signal[0]][signal[1]] = 4
                 else:
-                    path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 0
-                hider_signal["signal_pos"] = path[i].map.signal(hider_signal["hider_pos"])
-                path[i].map.hider_signal.add(hider_signal["signal_pos"])
-                path[i].map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 5
-            temp = path[i]
-            break
+                    path[i].map.map[signal[0]][signal[1]] = 0
+            if path[i].map.step % path[i].map.timeSignal == 0:
+                current_signal = set()
+                for hider in list_potential_hider_signal:
+                    if hider["hider_pos"] in path[i].map.hider_pos:
+                        signal = random.choice(hider["potential_signal"])
+                        while signal == path[i].seeker_pos:
+                            signal = random.choice(hider["potential_signal"])
+                        current_signal.add(signal)
+            for signal in current_signal:
+                path[i].map.map[signal[0]][signal[1]] = 5
+            path[i].map.map[path[i].seeker_pos[0]][path[i].seeker_pos[1]] = 3
         if len(path[i].unobserved) < len(list_unobserved) or path[i].map.hider_pos.intersection(path[i].observed) != set():
             temp = path[i]
             break
+        if i == len(path) - 1:
+            temp = path[i]
     result = temp
+    if result.seeker_pos in result.map.hider_pos:
+        result.map.hider_pos.discard(result.seeker_pos)
+        return result, current_signal
     foundHider = result.map.hider_pos.intersection(result.observed)
     if foundHider != set():
+        check = True
         hider_pos = None
         min_distance = 1e9
-        for pos in foundHider:
-            hider_pos = pos
-            distance = result.calculateManhattanDistance(pos)
+        for hider in foundHider:
+            distance = result.calculateManhattanDistance(hider)
             if distance < min_distance:
                 min_distance = distance
-        for pos in foundHider:
-            distance = result.calculateManhattanDistance(pos)
-            if distance == min_distance:
-                hider_pos = pos
-                break
-        result = encounterHider(result, result, hider_pos)
-        return result
-    return result
+                hider_pos = hider
+        beginAStar = Seeker(result.map, result.seeker_pos)
+        res = encounterHider(result, beginAStar, hider_pos, list_potential_hider_signal, current_signal)
+        result = res[0]
+        current_signal = res[1]
+        return result, current_signal
+    foundSignal = current_signal.intersection(result.observed)
+    if foundSignal != set():
+        signal_pos = None
+        min_distance = 1e9
+        for signal in foundSignal:
+            distance = result.calculateManhattanDistance(signal)
+            if distance < min_distance and distance <= 2 * result.map.hider_radius - random.randint(0, result.map.hider_radius) and signal not in result.parent.observed:
+                min_distance = distance
+                signal_pos = signal
+        if signal_pos != None:
+            beginAStar = Seeker(result.map, result.seeker_pos)
+            res = encounterSignal(result, beginAStar, signal_pos, list_potential_hider_signal, current_signal)
+            result = res[0]
+            current_signal = res[1]
+            return result, current_signal
+    return result, current_signal
 
-def search(seeker):
+def encounterLocalMaximum2(seeker, beginAStar, list_potential_hider_signal, current_signal):
+    result = seeker
+    list_unobserved = result.unobserved.copy()
+    goal_pos = None
+    for val in list_unobserved:
+        goal_pos = val
+        break
+    result = result.AStar(goal_pos)
+    if result.map.map == beginAStar.map.map:
+        return result, current_signal
+    path = []
+    while result.parent != None and result.map.map != beginAStar.map.map:
+        path.append(result)
+        result = result.parent
+    path.reverse()
+    temp = None
+    original_signal = current_signal.copy()
+    for i in range(len(path)):
+        if path[i].map.step >= path[i].map.timeSignal:
+            for signal in original_signal:
+                if signal == path[i].seeker_pos:
+                    pass
+                elif signal in path[i].observed:
+                    path[i].map.map[signal[0]][signal[1]] = 4
+                else:
+                    path[i].map.map[signal[0]][signal[1]] = 0
+            if path[i].map.step % path[i].map.timeSignal == 0:
+                current_signal = set()
+                for hider in list_potential_hider_signal:
+                    if hider["hider_pos"] in path[i].map.hider_pos:
+                        signal = random.choice(hider["potential_signal"])
+                        while signal == path[i].seeker_pos:
+                            signal = random.choice(hider["potential_signal"])
+                        current_signal.add(signal)
+            for signal in current_signal:
+                path[i].map.map[signal[0]][signal[1]] = 5
+            path[i].map.map[path[i].seeker_pos[0]][path[i].seeker_pos[1]] = 3
+        if len(path[i].unobserved) < len(list_unobserved) or path[i].map.hider_pos.intersection(path[i].observed) != set():
+            temp = path[i]
+            break
+        if i == len(path) - 1:
+            temp = path[i]
+    result = temp
+    if result.seeker_pos in result.map.hider_pos:
+        result.map.hider_pos.discard(result.seeker_pos)
+        return result, current_signal
+
+def search(seeker, list_potential_hider_signal, current_signal, time_limit = 10):
     result = seeker
     check = False
+    start = time.time()
     while result.map.hider_pos != set():
-        result = result.hillClimbing(check)
-        beginAStar = result
+        res = result.hillClimbing(list_potential_hider_signal, current_signal, check)
+        result = res[0]
+        current_signal = res[1]
+        print(result.seeker_pos, end = "hill\n")
+        beginAStar = Seeker(result.map, result.seeker_pos)
         foundHider = result.map.hider_pos.intersection(result.observed)
         if foundHider != set():
+            check = True
             hider_pos = None
             min_distance = 1e9
-            for pos in foundHider:
-                hider_pos = pos
-                distance = result.calculateManhattanDistance(pos)
+            for hider in foundHider:
+                distance = result.calculateManhattanDistance(hider)
                 if distance < min_distance:
                     min_distance = distance
-            for pos in foundHider:
-                distance = result.calculateManhattanDistance(pos)
-                if distance == min_distance:
-                    hider_pos = pos
-                    break
-            result = encounterHider(result, beginAStar, hider_pos)
+                    hider_pos = hider
+            beginAStar = Seeker(result.map, result.seeker_pos)
+            res = encounterHider(result, beginAStar, hider_pos, list_potential_hider_signal, current_signal)
+            result = res[0]
+            current_signal = res[1]
+            print(result.seeker_pos, end = "hider\n")
             continue
-        foundHiderSignal = result.map.hider_signal.intersection(result.observed)
-        if foundHiderSignal != set():
-            check = True
-            hider_signal_pos = None
+        foundSignal = current_signal.intersection(result.observed)
+        if foundSignal != set():
+            signal_pos = None
             min_distance = 1e9
-            for pos in foundHiderSignal:
-                hider_signal_pos = pos
-                distance = result.calculateManhattanDistance(pos)
-                if distance < min_distance and distance <= 2 * result.map.hider_radius:
+            for signal in foundSignal:
+                distance = result.calculateManhattanDistance(signal)
+                if distance < min_distance and distance < 2 * result.map.hider_radius - random.randint(0, result.map.hider_radius) and signal not in result.parent.observed:
                     min_distance = distance
-            hider_signal_pos = None
-            for pos in foundHiderSignal:
-                distance = result.calculateManhattanDistance(pos)
-                if distance == min_distance:
-                    hider_signal_pos = pos
-                    break
-            if  hider_signal_pos != None:
-                result = encounterSignal(result, beginAStar, hider_signal_pos)
+                    signal_pos = signal
+            if signal_pos != None:
+                beginAStar = Seeker(result.map, result.seeker_pos)
+                res = encounterSignal(result, beginAStar, signal_pos, list_potential_hider_signal, current_signal)
+                result = res[0]
+                current_signal = res[1]
+                print(result.seeker_pos, end = "signal\n")
                 continue
-        result = encounterLocalMaximum(result, beginAStar)
+        res = encounterLocalMaximum(result, beginAStar, list_potential_hider_signal, current_signal)
+        result = res[0]
+        current_signal = res[1]
+        print(result.seeker_pos, end = "local\n")
     return result
 
 if __name__ == "__main__":
     map2d = Map()
-    map2d.read_map("map1.txt")
+    map2d.read_map("map2.txt")
     seeker_pos = map2d.get_seeker_pos()
-    map2d.get_hider_pos()
     map2d.get_walls_and_obstacles()
     hider_pos_list = map2d.get_hider_pos()
+    list_potential_hider_signal = []
+    current_signal = set()
     for hider_pos in hider_pos_list:
         hider = {
             "hider_pos": hider_pos,
-            "signal_pos": map2d.signal(hider_pos)
+            "potential_signal": map2d.potentialSignalArea(hider_pos)
         }
-        map2d.hider.append(hider)
+        list_potential_hider_signal.append(hider)
         map2d.hider_pos.add(hider_pos)
-        map2d.hider_signal.add(hider["signal_pos"])
+        current_signal.add(random.choice(hider["potential_signal"]))
     seeker = Seeker(map2d, seeker_pos)
     seeker.updateMap()
     result = seeker
-    result = search(result)
+    result = search(result, list_potential_hider_signal, current_signal)
     path = sk.findSolution(seeker, result)
     runMapGUI(map2d.map, path)
-    print(len(path) * -1 + 20 * len(hider_pos_list))
-
-    
+    print(path[-1].map.step * -1 + len(hider_pos_list))
     

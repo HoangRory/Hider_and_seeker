@@ -10,7 +10,6 @@ class Map:
         self.step = step
         self.timeSignal = timeSignal
         self.hider = []
-        self.hider_signal = set()
         self.hider_pos = set()
         self.hider_radius = hider_radius
     
@@ -49,7 +48,6 @@ class Map:
                 if self.map[i][j] == 2:
                     hider_pos_list.append((i, j))
         return hider_pos_list
-        
     
     def print_map(self):
         for i in range(self.row):
@@ -60,12 +58,21 @@ class Map:
     def signal(self, hider_pos):
         area = []
         for i in range(hider_pos[0] - self.hider_radius, hider_pos[0] + self.hider_radius + 1):
-             for j in range(hider_pos[1] - self.hider_radius, hider_pos[1] + self.hider_radius + 1):
+            for j in range(hider_pos[1] - self.hider_radius, hider_pos[1] + self.hider_radius + 1):
                 if i >= 0 and i < self.row and j >= 0 and j < self.col:
-                    if self.map[i][j] == 0 or self.map[i][j] == 4:
+                    if self.map[i][j] == 0:
                         area.append((i, j))
         return random.choice(area)
     
+    def potentialSignalArea(self, hider_pos):
+        area = []
+        for i in range(hider_pos[0] - self.hider_radius, hider_pos[0] + self.hider_radius + 1):
+            for j in range(hider_pos[1] - self.hider_radius, hider_pos[1] + self.hider_radius + 1):
+                if i >= 0 and i < self.row and j >= 0 and j < self.col:
+                    if self.map[i][j] == 0:
+                        area.append((i, j))
+        return area
+
     def get_walls_and_obstacles(self):
         self.obstacles = set()
         for i in range(self.row):
