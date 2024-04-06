@@ -38,7 +38,6 @@ def printText(inputText, size, color, pos):
 
 def menu():
     pygame.display.set_caption("Hide and seek")
-    
     while True:
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
