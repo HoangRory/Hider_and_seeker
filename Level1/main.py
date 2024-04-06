@@ -5,7 +5,7 @@ import seeker as sk
 import random
 
 class MapGUI:
-    def __init__(self, map_data, tile_size=20):
+    def __init__(self, map_data, tile_size=15):
         self.map_data = map_data
         self.tile_size = tile_size
         self.colors = {
