@@ -52,8 +52,9 @@ def start():
         
         level1Button = Button(image = None, pos = (WIDTH/2, HEITGH/2), text = "Level 1", font = pygame.font.Font(None, 50), textColor = "White", hoverColor = "Green")
         level2Button = Button(image = None, pos = (WIDTH/2, HEITGH/2 + 50), text = "Level 2", font = pygame.font.Font(None, 50), textColor = "White", hoverColor = "Green")
+        level3Button = Button(image = None, pos = (WIDTH/2, HEITGH/2 + 100), text = "Level 3", font = pygame.font.Font(None, 50), textColor = "White", hoverColor = "Green")
         
-        for button in [level1Button, level2Button]:
+        for button in [level1Button, level2Button, level3Button]:
             button.changeColor(mousePos)
             button.update(screen)
         
@@ -66,6 +67,8 @@ def start():
                     level1()
                 elif level2Button.checkInput(mousePos):
                     level2()
+                elif level3Button.checkInput(mousePos):
+                    level3()
 
         pygame.display.update()
         
@@ -73,6 +76,8 @@ def level1():
     os.system("python Level1/main.py")
 def level2():
     os.system("python Level2/main.py")
+def level3():
+    os.system("python Level3/main.py")
         
         
 menu()

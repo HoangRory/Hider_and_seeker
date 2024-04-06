@@ -49,6 +49,14 @@ class Map:
                     hider_pos_list.append((i, j))
         return hider_pos_list
     
+    def count_hider(self):
+        count = 0
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.map[i][j] == 2:
+                    count += 1
+        return count
+    
     def print_map(self):
         for i in range(self.row):
             for j in range(self.col):
