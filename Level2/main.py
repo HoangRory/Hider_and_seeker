@@ -24,9 +24,10 @@ class MapGUI:
         # Calculate window size based on map size and tile size
         self.window_width = len(map_data[0]) * tile_size
         self.window_height = len(map_data) * tile_size
+        score_display_height = 40  # Height of the score display area
         # Initialize Pygame
         pygame.init()
-        self.screen = pygame.display.set_mode((self.window_width, self.window_height))
+        self.screen = pygame.display.set_mode((self.window_width, self.window_height + score_display_height))
         pygame.display.set_caption('Hide and Seek')
 
     def draw_map(self):
@@ -41,6 +42,7 @@ class MapGUI:
                 pygame.draw.line(self.screen, (0, 0, 0), (x * self.tile_size, 0), (x * self.tile_size, self.window_height))
             # Draw horizontal grid lines
             pygame.draw.line(self.screen, (0, 0, 0), (0, y * self.tile_size), (self.window_width, y * self.tile_size))
+        pygame.draw.line(self.screen, (0, 0, 0), (0, self.window_height), (self.window_width, self.window_height))
         pygame.display.flip()  # Update the display
 
     def toggle_signal_visibility(self):
@@ -50,17 +52,28 @@ class MapGUI:
         else:
             self.colors[5] = (83, 86, 255)
 
-def runMapGUI(beginningMap, path):
+def runMapGUI(beginningMap, path, hider_pos_list):
     map_gui = MapGUI(beginningMap)
     running = True
     step_index = 0
+    found_hider = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         if step_index < len(path):
             map_gui.map_data = path[step_index].map.map
+            # if seeker's position overlaps with any hider's position, increment found_hider
+            if path[step_index].seeker_pos in hider_pos_list:
+                found_hider += 1
             map_gui.draw_map()
+            score_font = pygame.font.Font(pygame.font.match_font('Arial'), 25)
+            score = (step_index * -1) + (found_hider * 20)
+            score_text = score_font.render("Score: " + str(score), True, (0, 0, 0))  # Specify text color as (0, 0, 0) for black
+            score_rect = score_text.get_rect()
+            score_rect.bottom = map_gui.window_height + 35  # Set the bottom of the text rectangle
+            map_gui.screen.blit(score_text, score_rect)  # Blit score text onto the screen
+            pygame.display.flip()  # Update the display after blitting
             pygame.time.wait(100)
             step_index += 1
 
@@ -358,7 +371,7 @@ def search(seeker, list_potential_hider_signal, current_signal, time_limit = 10)
 
 if __name__ == "__main__":
     map2d = Map()
-    map2d.read_map("map2.txt")
+    map2d.read_map("map1.txt")
     seeker_pos = map2d.get_seeker_pos()
     map2d.get_walls_and_obstacles()
     hider_pos_list = map2d.get_hider_pos()
@@ -377,6 +390,6 @@ if __name__ == "__main__":
     result = seeker
     result = search(result, list_potential_hider_signal, current_signal)
     path = sk.findSolution(seeker, result)
-    runMapGUI(map2d.map, path)
-    print(path[-1].map.step * -1 + len(hider_pos_list))
+    runMapGUI(map2d.map, path, hider_pos_list)
+    print(path[-1].map.step * -1 + len(hider_pos_list) * 20)
     
