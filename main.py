@@ -117,29 +117,20 @@ def level1():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                pygame.display.update()
                 if map1Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl1("map1.txt")
                 elif map2Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl1("map2.txt")
                 elif map3Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl1("map3.txt")
                 elif map4Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl1("map4.txt")
                 elif map5Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl1("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
-                    pygame.display.set_mode((WIDTH, HEITGH))
                     break
                 pygame.display.set_mode((WIDTH, HEITGH))   
         pygame.display.update()
@@ -166,29 +157,20 @@ def level2():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                pygame.display.update()
                 if map1Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl2("map1.txt")
                 elif map2Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl2("map2.txt")
                 elif map3Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl2("map3.txt")
                 elif map4Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl2("map4.txt")
                 elif map5Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl2("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
-                    pygame.display.set_mode((WIDTH, HEITGH))
                     break
                 pygame.display.set_mode((WIDTH, HEITGH))
         pygame.display.update()
@@ -215,29 +197,20 @@ def level3():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                pygame.display.update()
                 if map1Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl3("map1.txt")
                 elif map2Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl3("map2.txt")
                 elif map3Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl3("map3.txt")
                 elif map4Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl3("map4.txt")
                 elif map5Button.checkInput(mousePos):
-                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
-                    pygame.display.update()
                     lvl3("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
-                    pygame.display.set_mode((WIDTH, HEITGH))
                     break
                 pygame.display.set_mode((WIDTH, HEITGH))        
         pygame.display.update()       
