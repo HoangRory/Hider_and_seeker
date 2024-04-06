@@ -1,8 +1,7 @@
 import pygame
-from map import Map
-from seeker import Seeker
-import seeker as sk
-from seeker import UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
+from .map import Map
+from .seeker import Seeker, findSolution as sk
+from .seeker import UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
 import random
 import copy
 import time
@@ -429,9 +428,9 @@ def search(seeker, list_potential_hider_signal, current_signal, time_limit = 10)
         print(result.seeker_pos, end = "local\n")
     return result
 
-if __name__ == "__main__":
+def main(fileName = "map2.txt"):
     map2d = Map()
-    map2d.read_map("map2.txt")
+    map2d.read_map(fileName)
     seeker_pos = map2d.get_seeker_pos()
     map2d.get_walls_and_obstacles()
     hider_pos_list = map2d.get_hider_pos()
@@ -450,7 +449,7 @@ if __name__ == "__main__":
     seeker.updateMap()
     result = seeker
     result = search(result, list_potential_hider_signal, current_signal)
-    path = sk.findSolution(seeker, result)
+    path = sk(seeker, result)
     runMapGUI(map2d.map, path, maxHider)
     print(path[-1].map.step * -1 + len(hider_pos_list) * 20)
     

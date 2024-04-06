@@ -1,7 +1,6 @@
 import pygame
-from map import Map
-from seeker import Seeker
-import seeker as sk
+from .map import Map
+from .seeker import Seeker, findSolution as sk
 import random
 
 class MapGUI:
@@ -255,9 +254,9 @@ def search(seeker, potentialSignalArea):
                 break
     return result
 
-if __name__ == "__main__":
+def main(fileName = "map1.txt"):
     map2d = Map()
-    map2d.read_map("map1.txt")
+    map2d.read_map(fileName)
     seeker_pos = map2d.get_seeker_pos()
     hider_pos = map2d.get_hider_pos()
     map2d.get_walls_and_obstacles()
@@ -268,6 +267,6 @@ if __name__ == "__main__":
     seeker.updateMap()
     result = seeker
     result = search(result, potentialSignalArea)
-    path = sk.findSolution(seeker, result)
+    path = sk(seeker, result)
     runMapGUI(map2d.map, path)
     print(path[-1].map.step * -1 + 20)

@@ -1,4 +1,4 @@
-from map import Map
+from .map import Map
 import heapq
 import time
 import random

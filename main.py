@@ -1,7 +1,9 @@
 import pygame
 import sys
 from button import Button
-import os
+from Level1.main import main as lvl1
+from Level2.main import main as lvl2
+from Level3.main import main as lvl3
 
 HEITGH = 720
 WIDTH = 1280
@@ -66,6 +68,7 @@ lvButton = pygame.image.load("assets/Button.png")
 lvButton = pygame.transform.scale(lvButton, (175, 80))
 def start():
     while True:
+        screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a level"
@@ -92,13 +95,150 @@ def start():
                     level3()
 
         pygame.display.update()
-        
+
+waitPrompt = "Loading..."
 def level1():
-    os.system("python Level1/main.py")
+    while True:
+        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        screen.blit(menuBG, (0, 0))
+        mousePos = pygame.mouse.get_pos()
+        promptText = "Choose a map"
+        printText(promptText, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 200))
+        map1Button = Button(image=lvButton, pos=(WIDTH/2 - 200, HEITGH/2), text="Map 1", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map2Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2), text="Map 2", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map3Button = Button(image=lvButton, pos=(WIDTH/2 + 200, HEITGH/2), text="Map 3", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map4Button = Button(image=lvButton, pos=(WIDTH/2 - 100, HEITGH/2 + 150), text="Map 4", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map5Button = Button(image=lvButton, pos=(WIDTH/2 + 100, HEITGH/2 + 150), text="Map 5", fontSize=50, textColor="White", hoverSize=(185, 85))
+        backButton = Button(image=lvButton, pos=(100, HEITGH - 50), text="< Back", fontSize=50, textColor="White", hoverSize=(185, 85))
+
+        for button in [map1Button, map2Button, map3Button, map4Button, map5Button, backButton]:
+            button.changeSize(mousePos)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if map1Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl1("map1.txt")
+                elif map2Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl1("map2.txt")
+                elif map3Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl1("map3.txt")
+                elif map4Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl1("map4.txt")
+                elif map5Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl1("map5.txt")
+                elif backButton.checkInput(mousePos):
+                    start()
+                    break   
+        pygame.display.update()
+
 def level2():
-    os.system("python Level2/main.py")
-def level3():
-    os.system("python Level3/main.py")
+    while True:
+        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        screen.blit(menuBG, (0, 0))
+        mousePos = pygame.mouse.get_pos()
+        promptText = "Choose a map"
+        printText(promptText, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 200))
+        map1Button = Button(image=lvButton, pos=(WIDTH/2 - 200, HEITGH/2), text="Map 1", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map2Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2), text="Map 2", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map3Button = Button(image=lvButton, pos=(WIDTH/2 + 200, HEITGH/2), text="Map 3", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map4Button = Button(image=lvButton, pos=(WIDTH/2 - 100, HEITGH/2 + 150), text="Map 4", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map5Button = Button(image=lvButton, pos=(WIDTH/2 + 100, HEITGH/2 + 150), text="Map 5", fontSize=50, textColor="White", hoverSize=(185, 85))
+        backButton = Button(image=lvButton, pos=(100, HEITGH - 50), text="< Back", fontSize=50, textColor="White", hoverSize=(185, 85))
+
+        for button in [map1Button, map2Button, map3Button, map4Button, map5Button, backButton]:
+            button.changeSize(mousePos)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if map1Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl2("map1.txt")
+                elif map2Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl2("map2.txt")
+                elif map3Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl2("map3.txt")
+                elif map4Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl2("map4.txt")
+                elif map5Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl2("map5.txt")
+                elif backButton.checkInput(mousePos):
+                    start()
+                    break
+        pygame.display.update()
         
+def level3():
+    while True:
+        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        screen.blit(menuBG, (0, 0))
+        mousePos = pygame.mouse.get_pos()
+        promptText = "Choose a map"
+        printText(promptText, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 200))
+        map1Button = Button(image=lvButton, pos=(WIDTH/2 - 200, HEITGH/2), text="Map 1", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map2Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2), text="Map 2", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map3Button = Button(image=lvButton, pos=(WIDTH/2 + 200, HEITGH/2), text="Map 3", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map4Button = Button(image=lvButton, pos=(WIDTH/2 - 100, HEITGH/2 + 150), text="Map 4", fontSize=50, textColor="White", hoverSize=(185, 85))
+        map5Button = Button(image=lvButton, pos=(WIDTH/2 + 100, HEITGH/2 + 150), text="Map 5", fontSize=50, textColor="White", hoverSize=(185, 85))
+        backButton = Button(image=lvButton, pos=(100, HEITGH - 50), text="< Back", fontSize=50, textColor="White", hoverSize=(185, 85))
+
+        for button in [map1Button, map2Button, map3Button, map4Button, map5Button, backButton]:
+            button.changeSize(mousePos)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if map1Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl3("map1.txt")
+                elif map2Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl3("map2.txt")
+                elif map3Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl3("map3.txt")
+                elif map4Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl3("map4.txt")
+                elif map5Button.checkInput(mousePos):
+                    printText(waitPrompt, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 100))
+                    pygame.display.update()
+                    lvl3("map5.txt")
+                elif backButton.checkInput(mousePos):
+                    start()
+                    break
+        pygame.display.update()       
         
 menu()
