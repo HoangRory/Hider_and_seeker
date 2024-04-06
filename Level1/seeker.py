@@ -274,6 +274,8 @@ class Seeker:
                         self.observed.add((i, j))
                         self.unobserved.discard((i, j))
         self.map.map[self.seeker_pos[0]][self.seeker_pos[1]] = 3
+        self.observed.add(self.seeker_pos)
+        self.unobserved.discard(self.seeker_pos)
         for i in range(self.seeker_pos[0] - self.vision_range, self.seeker_pos[0] + self.vision_range + 1):
             for j in range(self.seeker_pos[1] - self.vision_range, self.seeker_pos[1] + self.vision_range + 1):
                 if (i , j) in self.map.obstacles:
@@ -308,8 +310,6 @@ class Seeker:
             new_pos = (self.seeker_pos[0] + move[0], self.seeker_pos[1] + move[1])
             new_state = Seeker(self.map, new_pos, self.vision_range, self.visionCount, unobserved = self.unobserved, parent = self)
             new_state.map.step += 1
-            if new_state.map.step >= new_state.map.timeSignal:
-                new_state.map.map[new_state.map.hider_signal_pos[0]][new_state.map.hider_signal_pos[1]] = 5
             new_state.path_cost = self.path_cost + 1
             new_state.updateMap()
             new_states.append(new_state)
@@ -322,13 +322,10 @@ class Seeker:
     def checkExplored(self, explored):
         return tuple(tuple(row) for row in self.map.map) in explored
         
-    def hillClimbing(self, checkSignal = False):
+    def hillClimbing(self, potentialSignalArea):
         current_state = self
         if self.map.hider_pos in current_state.observed:
             return current_state
-        if checkSignal == False:
-            if self.map.hider_signal_pos in current_state.observed:
-                return current_state
         while True:
             new_states = current_state.generateNewStates()
             try:
@@ -340,20 +337,26 @@ class Seeker:
                 break
             best_states = [state for state in new_states if state.visionCount == max_vision_count]
             current_state = random.choice(best_states)
-            if current_state.map.step >= current_state.map.timeSignal and current_state.map.step % current_state.map.timeSignal == 0:
-                if current_state.map.hider_signal_pos == current_state.seeker_pos:
+            if current_state.map.step >= current_state.map.timeSignal:
+                signal = current_state.map.hider_signal_pos
+                signal_pos = current_state.map.hider_signal_pos
+                if signal == current_state.seeker_pos:
                     pass
-                elif current_state.map.hider_signal_pos in current_state.observed:
-                    current_state.map.map[current_state.map.hider_signal_pos[0]][current_state.map.hider_signal_pos[1]] = 4
+                elif signal in current_state.observed:
+                    current_state.map.map[signal[0]][signal[1]] = 4
                 else:
-                    current_state.map.map[current_state.map.hider_signal_pos[0]][current_state.map.hider_signal_pos[1]] = 0
-                current_state.map.hider_signal_pos = current_state.map.signal()
-                current_state.map.map[current_state.map.hider_signal_pos[0]][current_state.map.hider_signal_pos[1]] = 5
+                    current_state.map.map[signal[0]][signal[1]] = 0
+                if current_state.map.step % current_state.map.timeSignal == 0:
+                    signal_pos = random.choice(potentialSignalArea)
+                    while signal_pos == current_state.seeker_pos:
+                        signal_pos = random.choice(potentialSignalArea)
+                if current_state.seeker_pos != signal_pos:
+                    current_state.map.map[signal_pos[0]][signal_pos[1]] = 5
+                current_state.map.hider_signal_pos = signal_pos
             if self.map.hider_pos in current_state.observed:
                 break
-            if checkSignal == False:
-                if self.map.hider_signal_pos in current_state.observed:
-                    break
+            if current_state.map.hider_signal_pos in current_state.observed and current_state.map.hider_signal_pos not in current_state.parent.observed:
+                break
         return current_state
     
     def AStar(self, goal_pos):

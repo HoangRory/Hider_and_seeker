@@ -2,6 +2,7 @@ from map import Map
 import heapq
 import time
 import random
+import copy
 UP = (0, 1)
 DOWN = (0, -1)
 LEFT = (-1, 0)
@@ -14,11 +15,9 @@ DOWN_LEFT = (-1, -1)
 class Seeker:
     def __init__(self, map2d, seeker_pos, vision_range = 3, visionCount = 0, path_cost = 0, heuristic_cost = 0, parent = None, unobserved = None):
         self.map = Map(map2d.row, map2d.col, map2d.step, map2d.timeSignal)
-        self.map.map = [row.copy() for row in map2d.map]
+        self.map.map = copy.deepcopy(map2d.map)
         self.map.obstacles = map2d.obstacles
-        self.map.hider = map2d.hider
         self.map.hider_pos = map2d.hider_pos
-        self.map.hider_signal = map2d.hider_signal
         self.seeker_pos = seeker_pos
         self.vision_range = vision_range
         self.visionCount = visionCount
@@ -279,7 +278,7 @@ class Seeker:
         self.unobserved.discard(self.seeker_pos)
         for i in range(self.seeker_pos[0] - self.vision_range, self.seeker_pos[0] + self.vision_range + 1):
             for j in range(self.seeker_pos[1] - self.vision_range, self.seeker_pos[1] + self.vision_range + 1):
-                if (i, j) in self.map.obstacles:
+                if (i , j) in self.map.obstacles:
                     self.blockVision((i, j))
         if self.parent != None:
             self.observed = self.observed.union(self.parent.observed)
@@ -311,9 +310,6 @@ class Seeker:
             new_pos = (self.seeker_pos[0] + move[0], self.seeker_pos[1] + move[1])
             new_state = Seeker(self.map, new_pos, self.vision_range, self.visionCount, unobserved = self.unobserved, parent = self)
             new_state.map.step += 1
-            if new_state.map.step >= new_state.map.timeSignal:
-                for hider_signal in new_state.map.hider:
-                    new_state.map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 5
             new_state.path_cost = self.path_cost + 1
             new_state.updateMap()
             new_states.append(new_state)
@@ -326,13 +322,13 @@ class Seeker:
     def checkExplored(self, explored):
         return tuple(tuple(row) for row in self.map.map) in explored
         
-    def hillClimbing(self, checkSignal = False):
+    def hillClimbing(self, list_potential_hider_signal, current_signal, check = False):
         current_state = self
-        if self.map.hider_pos.intersection(current_state.observed) != set():
-            return current_state
-        if checkSignal == False:
-            if self.map.hider_signal.intersection(current_state.observed) != set():
-                return current_state
+        if current_state.map.hider_pos.intersection(current_state.observed):
+            return current_state, current_signal
+        # if check == False:
+        #     if current_signal.intersection(current_state.observed):
+        #         return current_state, current_signal
         while True:
             new_states = current_state.generateNewStates()
             try:
@@ -344,24 +340,31 @@ class Seeker:
                 break
             best_states = [state for state in new_states if state.visionCount == max_vision_count]
             current_state = random.choice(best_states)
-            if current_state.map.step >= current_state.map.timeSignal and current_state.map.step % current_state.map.timeSignal == 0:
-                current_state.map.hider_signal = set()
-                for hider_signal in current_state.map.hider:
-                    if current_state.seeker_pos == hider_signal["signal_pos"]:
+            if current_state.map.step >= current_state.map.timeSignal:
+                for signal in current_signal:
+                    if signal == current_state.seeker_pos:
                         pass
-                    elif hider_signal["signal_pos"] in current_state.observed:
-                        current_state.map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 4
+                    elif signal in current_state.observed:
+                        current_state.map.map[signal[0]][signal[1]] = 4
                     else:
-                        current_state.map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 0
-                    hider_signal["signal_pos"] = current_state.map.signal(hider_signal["hider_pos"])
-                    current_state.map.hider_signal.add(hider_signal["signal_pos"])
-                    current_state.map.map[hider_signal["signal_pos"][0]][hider_signal["signal_pos"][1]] = 5
-            if self.map.hider_pos.intersection(current_state.observed) != set():
+                        current_state.map.map[signal[0]][signal[1]] = 0
+                if current_state.map.step % current_state.map.timeSignal == 0:
+                    current_signal = set()
+                    for hider in list_potential_hider_signal:
+                        if hider["hider_pos"] in current_state.map.hider_pos:
+                            signal = random.choice(hider["potential_signal"])
+                            while signal == current_state.seeker_pos:
+                                signal = random.choice(hider["potential_signal"])
+                            current_signal.add(signal)
+                for signal in current_signal:
+                    current_state.map.map[signal[0]][signal[1]] = 5
+                current_state.map.map[current_state.seeker_pos[0]][current_state.seeker_pos[1]] = 3
+            if current_state.map.hider_pos.intersection(current_state.observed) != set():
                 break
-            if checkSignal == False:
-                if self.map.hider_signal.intersection(current_state.observed) != set():
-                    break
-        return current_state
+            # if check == False:
+            #     if current_signal.intersection(current_state.observed) != set():
+            #         break
+        return current_state, current_signal
     
     def AStar(self, goal_pos):
         frontier = []
@@ -382,6 +385,7 @@ class Seeker:
                 if not new_state.checkExplored(explored):
                     heapq.heappush(frontier, new_state)
                     length_frontier += 1
+        return self
 
     def BFS(self, list_unobserved):
         frontier = [self]
@@ -400,6 +404,7 @@ class Seeker:
                 if not new_state.checkExplored(explored):
                     heapq.heappush(frontier, new_state)
                     length_frontier += 1
+        return self
 
 def findSolution(initial_state, result):
     path = []
@@ -411,3 +416,4 @@ def findSolution(initial_state, result):
     path.append(initial_state)
     path.reverse()
     return path
+    
