@@ -9,7 +9,7 @@ WIDTH = 1280
 pygame.init()
 
 screen = pygame.display.set_mode((WIDTH, HEITGH))
-menuBG = pygame.image.load("assets/MenuBG.jpg")
+menuBG = pygame.image.load("assets/MenuBG.png")
 buttonBG = pygame.image.load("assets/Button.png")
 buttonBG = pygame.transform.scale(buttonBG, (250, 100))
 
@@ -46,10 +46,10 @@ def menu():
         subtitleText = "But you're not playing"
         printText(subtitleText, 50, (255, 255, 255), (WIDTH/2, HEITGH/2 - 125))
         
-        startButton = Button(image=buttonBG, pos=(WIDTH/2, HEITGH/2 + 50), text="START", font=pygame.font.Font(None, 75), textColor="White", hoverColor="Green")
+        startButton = Button(image=buttonBG, pos=(WIDTH/2, HEITGH/2 + 50), text="START", fontSize=75, textColor="White", hoverSize=(260, 110))
         
         for button in [startButton]:
-            button.changeColor(mousePos)
+            button.changeSize(mousePos)
             button.update(screen)
             
         for event in pygame.event.get():
@@ -71,12 +71,12 @@ def start():
         promptText = "Choose a level"
         printText(promptText, 100, (255, 255, 255), (WIDTH/2, HEITGH/2 - 200))
         
-        level1Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 - 50), text="Level 1", font=pygame.font.Font(None, 50), textColor="White", hoverColor="Green")
-        level2Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 + 50), text="Level 2", font=pygame.font.Font(None, 50), textColor="White", hoverColor="Green")
-        level3Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 + 150), text="Level 3", font=pygame.font.Font(None, 50), textColor="White", hoverColor="Green")
+        level1Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 - 50), text="Level 1", fontSize=50, textColor="White", hoverSize=(185, 85))
+        level2Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 + 50), text="Level 2", fontSize=50, textColor="White", hoverSize=(185, 85))
+        level3Button = Button(image=lvButton, pos=(WIDTH/2, HEITGH/2 + 150), text="Level 3", fontSize=50, textColor="White", hoverSize=(185, 85))
         
         for button in [level1Button, level2Button, level3Button]:
-            button.changeColor(mousePos)
+            button.changeSize(mousePos)
             button.update(screen)
         
         for event in pygame.event.get():
