@@ -68,7 +68,6 @@ lvButton = pygame.image.load("assets/Button.png")
 lvButton = pygame.transform.scale(lvButton, (175, 80))
 def start():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a level"
@@ -99,7 +98,6 @@ def start():
 waitPrompt = "Loading..."
 def level1():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
@@ -142,12 +140,13 @@ def level1():
                     lvl1("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
-                    break   
+                    pygame.display.set_mode((WIDTH, HEITGH))
+                    break
+                pygame.display.set_mode((WIDTH, HEITGH))   
         pygame.display.update()
 
 def level2():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
@@ -190,12 +189,13 @@ def level2():
                     lvl2("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
+                    pygame.display.set_mode((WIDTH, HEITGH))
                     break
+                pygame.display.set_mode((WIDTH, HEITGH))
         pygame.display.update()
         
 def level3():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
@@ -238,7 +238,9 @@ def level3():
                     lvl3("map5.txt")
                 elif backButton.checkInput(mousePos):
                     start()
+                    pygame.display.set_mode((WIDTH, HEITGH))
                     break
+                pygame.display.set_mode((WIDTH, HEITGH))        
         pygame.display.update()       
         
 menu()
