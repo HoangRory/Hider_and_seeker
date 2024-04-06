@@ -26,7 +26,7 @@ class MapGUI:
         score_display_height = 40  # Height of the score display area
         # Initialize Pygame
         pygame.init()
-        self.screen = pygame.display.set_mode((self.window_width, self.window_height + score_display_height))
+        self.screen = pygame.display.set_mode((1280, 760 + score_display_height))
         pygame.display.set_caption('Hide and Seek')
 
     def draw_map(self):

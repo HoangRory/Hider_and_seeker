@@ -5,7 +5,7 @@ from Level1.main import main as lvl1
 from Level2.main import main as lvl2
 from Level3.main import main as lvl3
 
-HEITGH = 720
+HEITGH = 800
 WIDTH = 1280
 
 pygame.init()
@@ -38,7 +38,6 @@ def printText(inputText, size, color, pos):
 
 def menu():
     pygame.display.set_caption("Hide and seek")
-    
     while True:
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
@@ -68,7 +67,7 @@ lvButton = pygame.image.load("assets/Button.png")
 lvButton = pygame.transform.scale(lvButton, (175, 80))
 def start():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        #screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a level"
@@ -99,7 +98,7 @@ def start():
 waitPrompt = "Loading..."
 def level1():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        #screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
@@ -147,7 +146,7 @@ def level1():
 
 def level2():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        #screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
@@ -195,7 +194,7 @@ def level2():
         
 def level3():
     while True:
-        screen = pygame.display.set_mode((WIDTH, HEITGH))
+        #screen = pygame.display.set_mode((WIDTH, HEITGH))
         screen.blit(menuBG, (0, 0))
         mousePos = pygame.mouse.get_pos()
         promptText = "Choose a map"
